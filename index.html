@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍞 식빵이의 팀파니 오케스트라</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:linear-gradient(160deg,#0d0020 0%,#0a1540 50%,#001428 100%);min-height:100vh;font-family:'Jua',sans-serif;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.star{position:absolute;background:white;border-radius:50%;animation:twinkle 2s infinite alternate;}
+@keyframes twinkle{from{opacity:.12}to{opacity:.9}}
+#song-select{position:fixed;inset:0;background:rgba(4,0,18,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;gap:13px;padding:20px;}
+#song-select h1{font-size:38px;color:#ffe44d;text-shadow:0 0 30px #ffaa00,0 4px 0 #774400;}
+#song-select .sub{color:#9ab;font-size:14px;margin-top:-6px;}
+.song-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:680px;max-height:430px;overflow-y:auto;padding:4px;}
+.song-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 15px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:11px;}
+.song-card:hover{background:rgba(255,255,255,.1);border-color:rgba(255,220,80,.5);transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,180,0,.18);}
+.song-card.selected{border-color:#ffe44d;background:rgba(255,220,60,.1);box-shadow:0 0 16px rgba(255,220,0,.25);}
+.song-emoji{font-size:28px;flex-shrink:0;}
+.song-name{font-size:15px;color:#fff;margin-bottom:1px;}
+.song-composer{font-size:11px;color:#7799bb;}
+.song-diff{font-size:12px;margin-top:2px;}
+.play-btn{font-family:'Jua',sans-serif;font-size:20px;background:linear-gradient(135deg,#ffcc00,#ff6600);color:#2a0a00;border:none;padding:11px 42px;border-radius:50px;cursor:pointer;box-shadow:0 6px 25px rgba(255,120,0,.5);transition:transform .1s,box-shadow .1s;}
+.play-btn:hover{transform:translateY(-3px);box-shadow:0 10px 35px rgba(255,120,0,.7);}
+.play-btn:disabled{background:#2a2a2a;color:#555;box-shadow:none;cursor:not-allowed;transform:none;}
+#game-container{position:relative;width:700px;height:590px;z-index:1;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:6px 16px 3px;}
+#score-display{font-size:24px;color:#ffe44d;text-shadow:0 0 12px #ffaa00,0 2px 0 #aa6600;}
+#song-title-hud{font-size:13px;color:#aaccff;text-align:center;flex:1;padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#combo-display{font-size:18px;color:#ff88ff;text-shadow:0 0 10px #ff44ff;min-width:100px;text-align:right;}
+#life-display{font-size:18px;}
+#progress-bar-wrap{width:700px;height:5px;background:rgba(255,255,255,.1);border-radius:3px;margin-bottom:3px;overflow:hidden;}
+#progress-bar{height:100%;background:linear-gradient(90deg,#6baaff,#ff6baa);border-radius:3px;width:0%;}
+#notes-area{position:relative;width:700px;height:330px;background:rgba(0,0,0,.3);border-radius:14px 14px 0 0;overflow:hidden;border:2px solid rgba(255,255,255,.07);}
+.lane-line{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.06);}
+.hit-glow{position:absolute;bottom:16px;height:6px;width:130px;border-radius:3px;opacity:.6;box-shadow:0 0 12px 3px currentColor;}
+.note{position:absolute;width:40px;height:58px;pointer-events:none;z-index:10;}
+.judgment{position:absolute;font-size:26px;font-family:'Jua',sans-serif;pointer-events:none;animation:jPop .75s forwards;z-index:50;text-shadow:0 2px 8px rgba(0,0,0,.6);}
+@keyframes jPop{0%{transform:scale(.4) translateY(0);opacity:1;}55%{transform:scale(1.25) translateY(-16px);opacity:1;}100%{transform:scale(1.05) translateY(-36px);opacity:0;}}
+#stage{width:700px;height:230px;position:relative;background:linear-gradient(180deg,rgba(0,0,0,.32) 0%,rgba(0,0,0,.6) 100%);border-radius:0 0 14px 14px;border:2px solid rgba(255,255,255,.07);border-top:none;overflow:hidden;}
+.drum-wrapper{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-around;padding:0 14px 8px;}
+.drum-btn{display:flex;flex-direction:column;align-items:center;cursor:pointer;user-select:none;position:relative;transition:transform .07s;}
+.drum-btn:active,.drum-btn.pressed{transform:scale(.91) translateY(4px);}
+.drum-head-wrap{position:relative;width:108px;height:48px;}
+.drum-head{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(255,255,255,.35);transition:filter .08s;}
+.drum-head-shine{position:absolute;top:7px;left:14px;right:14px;height:11px;background:rgba(255,255,255,.28);border-radius:50%;pointer-events:none;}
+.drum-ring{position:absolute;border-radius:50%;pointer-events:none;animation:dRing .55s ease-out forwards;}
+@keyframes dRing{0%{inset:0;opacity:.9;border:2.5px solid rgba(255,255,255,.85);}100%{inset:-20px;opacity:0;border:2px solid rgba(255,255,255,0);}}
+.drum-ring2{position:absolute;border-radius:50%;pointer-events:none;animation:dRing2 .42s .07s ease-out forwards;}
+@keyframes dRing2{0%{inset:5px;opacity:.7;border:2px solid rgba(255,255,255,.7);}100%{inset:-13px;opacity:0;border:1.5px solid rgba(255,255,255,0);}}
+.drum-kettle{width:88px;height:60px;margin-top:-3px;position:relative;border-radius:0 0 44px 44px;background:linear-gradient(170deg,#a07030 0%,#6a4510 40%,#3a2008 100%);border:2px solid #1a0c04;box-shadow:inset -6px 0 14px rgba(0,0,0,.4),inset 6px 0 8px rgba(255,180,60,.12);}
+.drum-kettle::before{content:'';position:absolute;top:6px;left:10px;right:10px;height:3px;background:linear-gradient(90deg,transparent,rgba(255,200,80,.3),transparent);border-radius:2px;}
+.drum-legs-row{display:flex;justify-content:space-between;width:88px;}
+.drum-leg{width:7px;height:32px;margin:0 10px;background:linear-gradient(90deg,#aaa 30%,#555 100%);border-radius:3px 3px 4px 4px;}
+.drum-key-label{font-size:13px;color:rgba(255,255,255,.8);margin-top:4px;background:rgba(0,0,0,.5);padding:2px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.15);letter-spacing:1px;}
+.drum-btn.glowing .drum-head{filter:brightness(1.8) drop-shadow(0 0 22px var(--glow-c));}
+#splash-canvas{position:absolute;top:0;left:0;width:700px;height:230px;pointer-events:none;z-index:20;}
+#bread-char{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);width:76px;z-index:5;}
+#bread-char.bounce{animation:charBounce .22s ease;}
+@keyframes charBounce{0%{transform:translateX(-50%) scaleY(1) scaleX(1);}25%{transform:translateX(-50%) scaleY(.8) scaleX(1.2);}60%{transform:translateX(-50%) scaleY(1.08) scaleX(.95);}100%{transform:translateX(-50%) scaleY(1) scaleX(1);}}
+.overlay{position:fixed;inset:0;background:rgba(4,0,18,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:150;gap:15px;}
+.overlay h1{font-size:44px;color:#ffe44d;text-shadow:0 0 30px #ffaa00,0 4px 0 #774400;}
+.final-score{font-size:58px;color:#ffe44d;text-shadow:0 0 40px #ffaa00;}
+.result-stats{display:flex;gap:20px;font-size:17px;color:#ccddff;}
+.btn{font-family:'Jua',sans-serif;font-size:20px;background:linear-gradient(135deg,#ffcc00,#ff6600);color:#2a0a00;border:none;padding:11px 38px;border-radius:50px;cursor:pointer;box-shadow:0 6px 25px rgba(255,120,0,.5);transition:transform .1s,box-shadow .1s;margin:4px;}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 35px rgba(255,120,0,.7);}
+.btn-sec{background:linear-gradient(135deg,#6677ff,#aa44ff);box-shadow:0 6px 22px rgba(100,80,255,.4);}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div id="song-select">
+  <h1>🍞 식빵이의 팀파니 오케스트라</h1>
+  <p class="sub">🎵 연주할 곡을 선택하세요!</p>
+  <div class="song-grid" id="song-grid"></div>
+  <button class="play-btn" id="play-btn" disabled onclick="startSelectedSong()">▶ 연주 시작!</button>
+</div>
+<div class="overlay" id="result-screen" style="display:none;">
+  <h1 id="result-title">🎉 연주 완료!</h1>
+  <div class="final-score" id="final-score">0</div>
+  <div class="result-stats">
+    <span>완벽: <span id="res-perfect" style="color:#ffe44d">0</span></span>
+    <span>좋아요: <span id="res-good" style="color:#6bffb8">0</span></span>
+    <span>놓침: <span id="res-miss" style="color:#ff6b6b">0</span></span>
+    <span>최고콤보: <span id="res-combo" style="color:#ff88ff">0</span></span>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn" onclick="replaySong()">🔄 다시 하기</button>
+    <button class="btn btn-sec" onclick="goSongSelect()">🎵 곡 선택</button>
+  </div>
+</div>
+<div id="game-container">
+  <div id="hud">
+    <div id="score-display">점수: <span id="score">0</span></div>
+    <div id="song-title-hud"></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+      <div id="life-display">❤️❤️❤️</div>
+      <div id="combo-display"></div>
+    </div>
+  </div>
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  <div id="notes-area">
+    <div class="lane-line" style="left:25%"></div>
+    <div class="lane-line" style="left:50%"></div>
+    <div class="lane-line" style="left:75%"></div>
+    <div class="hit-glow" style="left:22px;color:#ff6b6b;background:#ff6b6b;"></div>
+    <div class="hit-glow" style="left:197px;color:#ffd93d;background:#ffd93d;"></div>
+    <div class="hit-glow" style="left:372px;color:#6bffb8;background:#6bffb8;"></div>
+    <div class="hit-glow" style="left:547px;color:#6baaff;background:#6baaff;"></div>
+  </div>
+  <div id="stage">
+    <canvas id="splash-canvas" width="700" height="230"></canvas>
+    <div id="bread-char">
+      <svg viewBox="0 0 80 110" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="40" cy="82" rx="20" ry="16" fill="#f4c47a"/>
+        <rect x="22" y="70" width="36" height="20" rx="6" fill="#4a7fd4"/>
+        <rect x="24" y="86" width="15" height="14" rx="3" fill="#f5d020"/>
+        <rect x="41" y="86" width="15" height="14" rx="3" fill="#f5d020"/>
+        <rect x="27" y="98" width="10" height="14" rx="3" fill="#f4c47a"/>
+        <rect x="43" y="98" width="10" height="14" rx="3" fill="#f4c47a"/>
+        <rect x="27" y="108" width="10" height="5" rx="2" fill="white"/>
+        <rect x="43" y="108" width="10" height="5" rx="2" fill="white"/>
+        <ellipse cx="32" cy="114" rx="8" ry="4" fill="#222"/>
+        <ellipse cx="48" cy="114" rx="8" ry="4" fill="#222"/>
+        <line x1="22" y1="77" x2="4" y2="91" stroke="#f4c47a" stroke-width="7" stroke-linecap="round"/>
+        <line x1="58" y1="77" x2="76" y2="91" stroke="#f4c47a" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="3" cy="93" r="5" fill="#8a5520"/>
+        <circle cx="77" cy="93" r="5" fill="#8a5520"/>
+        <rect x="16" y="18" width="48" height="50" rx="10" fill="#f5f0e0"/>
+        <rect x="54" y="18" width="10" height="50" rx="5" fill="#cc3333"/>
+        <ellipse cx="40" cy="18" rx="24" ry="10" fill="#f5f0e0"/>
+        <ellipse cx="32" cy="37" rx="7" ry="8" fill="#222"/>
+        <ellipse cx="48" cy="37" rx="7" ry="8" fill="#222"/>
+        <ellipse cx="30" cy="35" rx="2.5" ry="3" fill="white"/>
+        <ellipse cx="46" cy="35" rx="2.5" ry="3" fill="white"/>
+        <path d="M26 29 Q32 26 38 29" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M42 29 Q48 26 54 29" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M32 51 Q40 59 48 51" stroke="#333" stroke-width="2.5" fill="#cc6655" stroke-linecap="round"/>
+        <ellipse cx="26" cy="45" rx="6" ry="4" fill="#ffaabb" opacity="0.5"/>
+        <ellipse cx="54" cy="45" rx="6" ry="4" fill="#ffaabb" opacity="0.5"/>
+        <ellipse cx="40" cy="47" rx="2" ry="1.5" fill="#d4aa88"/>
+      </svg>
+    </div>
+    <div class="drum-wrapper" id="drum-wrapper"></div>
+  </div>
+</div>
+<script>
+(()=>{const c=document.getElementById('stars');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2.5+.5;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;c.appendChild(s);}})();
+
+let audioCtx=null,musicNodes=[];
+function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();}
+
+function playRealisticTimpani(lane){
+  if(!audioCtx)return;
+  const now=audioCtx.currentTime;
+  const pitches=[{fund:75,modes:[75,122,167,210]},{fund:89,modes:[89,145,199,250]},{fund:100,modes:[100,163,223,281]},{fund:112,modes:[112,183,250,315]}];
+  const p=pitches[lane];
+  const master=audioCtx.createGain();
+  master.gain.setValueAtTime(1.0,now);
+  master.gain.exponentialRampToValueAtTime(0.001,now+2.4);
+  master.connect(audioCtx.destination);
+
+  // Reverb tails
+  const d1=audioCtx.createDelay(0.06);const dg1=audioCtx.createGain();dg1.gain.value=0.18;
+  const d2=audioCtx.createDelay(0.12);const dg2=audioCtx.createGain();dg2.gain.value=0.10;
+  d1.connect(dg1);dg1.connect(audioCtx.destination);
+  d2.connect(dg2);dg2.connect(audioCtx.destination);
+
+  function mkSine(freq,gainAmt,decay,startT){
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='sine';o.frequency.setValueAtTime(freq,startT);
+    o.frequency.exponentialRampToValueAtTime(freq*.97,startT+.09);
+    g.gain.setValueAtTime(gainAmt,startT);g.gain.exponentialRampToValueAtTime(0.001,startT+decay);
+    o.connect(g);g.connect(master);g.connect(d1);o.start(startT);o.stop(startT+decay+.05);
+  }
+  mkSine(p.fund,.65,2.2,now);
+  mkSine(p.modes[1],.38,1.3,now);
+  mkSine(p.modes[2],.18,.75,now);
+  mkSine(p.modes[3],.09,.4,now);
+
+  // Mallet thud noise
+  const bsz=Math.floor(audioCtx.sampleRate*.09);
+  const nb=audioCtx.createBuffer(1,bsz,audioCtx.sampleRate);
+  const nd=nb.getChannelData(0);
+  for(let i=0;i<bsz;i++)nd[i]=(Math.random()*2-1)*Math.pow(1-i/bsz,2.8);
+  const ns=audioCtx.createBufferSource();ns.buffer=nb;
+  const nf=audioCtx.createBiquadFilter();nf.type='bandpass';nf.frequency.value=p.fund*2.2;nf.Q.value=.7;
+  const ng=audioCtx.createGain();ng.gain.setValueAtTime(.55,now);ng.gain.exponentialRampToValueAtTime(.001,now+.08);
+  ns.connect(nf);nf.connect(ng);ng.connect(master);ns.start(now);
+
+  // Sub punch
+  const sub=audioCtx.createOscillator(),sg=audioCtx.createGain();
+  sub.type='sine';sub.frequency.setValueAtTime(p.fund*.5,now);
+  sub.frequency.exponentialRampToValueAtTime(p.fund*.28,now+.14);
+  sg.gain.setValueAtTime(.8,now);sg.gain.exponentialRampToValueAtTime(.001,now+.18);
+  sub.connect(sg);sg.connect(master);sub.start(now);sub.stop(now+.2);
+
+  // Body resonance (slight sawtooth filtered heavily for wood body)
+  const body=audioCtx.createOscillator(),bg=audioCtx.createGain(),bf=audioCtx.createBiquadFilter();
+  body.type='sawtooth';body.frequency.value=p.fund*.5;
+  bf.type='lowpass';bf.frequency.value=120;
+  bg.gain.setValueAtTime(.25,now);bg.gain.exponentialRampToValueAtTime(.001,now+.35);
+  body.connect(bf);bf.connect(bg);bg.connect(master);body.start(now);body.stop(now+.38);
+}
+
+function stopMusic(){musicNodes.forEach(o=>{try{o.stop();}catch(e){}});musicNodes=[];}
+
+function playMelodyBackground(melody,bpm,instrument){
+  if(!audioCtx)return;stopMusic();
+  const beatSec=60/bpm;
+  const mg=audioCtx.createGain();mg.gain.value=0.10;mg.connect(audioCtx.destination);
+  const rv=audioCtx.createDelay(.28);const rg=audioCtx.createGain();rg.gain.value=.18;rv.connect(rg);rg.connect(mg);
+  function sn(freq,durB,vol,t){
+    if(freq===0)return;
+    const dur=durB*beatSec;
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+    f.type='lowpass';
+    if(instrument==='strings'){o.type='sawtooth';f.frequency.value=620;}
+    else if(instrument==='brass'){o.type='square';f.frequency.value=950;}
+    else{o.type='triangle';f.frequency.value=1600;}
+    const vo=audioCtx.createOscillator(),vg=audioCtx.createGain();vo.frequency.value=5.2;vg.gain.value=1.6;
+    vo.connect(vg);vg.connect(o.frequency);
+    o.frequency.value=freq;o.connect(f);f.connect(g);g.connect(mg);f.connect(rv);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.05);g.gain.setValueAtTime(vol,t+dur*.76);g.gain.linearRampToValueAtTime(0,t+dur);
+    o.start(t);o.stop(t+dur+.05);vo.start(t);vo.stop(t+dur+.05);musicNodes.push(o,vo);
+  }
+  const barDur=melody.reduce((s,n)=>s+n[1],0)*beatSec;
+  let cur=audioCtx.currentTime+.2;
+  for(let lp=0;lp<7;lp++){let t=cur;melody.forEach(n=>{sn(n[0],n[1],n[2]||1,t);t+=n[1]*beatSec;});cur+=barDur;}
+}
+
+function genBeatmap(duration,interval,offset){
+  offset=offset||1;const map=[];
+  const pats=[[0],[1],[2],[3],[0,1],[2,3],[0,2],[1,3],[0,3],[1,2],[0,1,2],[1,2,3]];
+  let t=offset,pi=0;
+  while(t<duration-1.5){pats[pi%pats.length].forEach(l=>map.push({t,l}));t+=interval;if(pi%7===5)t+=interval*.5;pi++;}
+  return map;
+}
+
+const SONGS=[
+  {id:0,emoji:'🎼',name:'베토벤 운명 교향곡',composer:'베토벤 · 1808',diff:5,bpm:108,instrument:'strings',duration:50,bgColor:'#1a0a30',
+   melody:[[196,.5,1],[196,.5,1],[196,.5,1],[156,3,1],[175,.5,1],[175,.5,1],[175,.5,1],[131,3,1],[196,.5,1],[208,.5,1],[220,.5,1],[233,3,1],[196,.5,1],[196,.5,1],[196,.5,1],[156,3,1]],
+   beatmap:[{t:1,l:0},{t:1.28,l:0},{t:1.56,l:0},{t:1.84,l:3},{t:3.5,l:1},{t:3.78,l:1},{t:4.06,l:1},{t:4.34,l:2},{t:6,l:0},{t:6.28,l:1},{t:6.56,l:2},{t:6.84,l:3},{t:8.5,l:2},{t:8.78,l:2},{t:9.06,l:2},{t:9.34,l:0},{t:11,l:1},{t:11.28,l:1},{t:11.56,l:1},{t:11.84,l:3},{t:13.5,l:0},{t:13.78,l:1},{t:14.06,l:2},{t:14.34,l:3},{t:16,l:0},{t:16.28,l:0},{t:16.56,l:0},{t:16.84,l:3},{t:18.5,l:1},{t:18.78,l:2},{t:19.06,l:1},{t:19.34,l:0},{t:21,l:2},{t:21.28,l:2},{t:21.56,l:2},{t:21.84,l:1},{t:23.5,l:3},{t:23.78,l:2},{t:24.06,l:1},{t:24.34,l:0},{t:26,l:0},{t:26.28,l:1},{t:26.56,l:2},{t:26.84,l:3},{t:28.5,l:3},{t:28.78,l:2},{t:29.06,l:1},{t:29.34,l:0},{t:31,l:0},{t:31.28,l:0},{t:31.56,l:1},{t:31.84,l:2},{t:33.5,l:2},{t:33.78,l:3},{t:34.06,l:2},{t:34.34,l:1},{t:36,l:0},{t:36.22,l:1},{t:36.44,l:2},{t:36.66,l:3},{t:38.5,l:1},{t:38.72,l:2},{t:38.94,l:3},{t:39.16,l:0},{t:41,l:0},{t:41.28,l:0},{t:41.56,l:0},{t:41.84,l:3},{t:43.5,l:2},{t:43.78,l:1},{t:44.06,l:0},{t:44.34,l:3},{t:46,l:1},{t:46.5,l:1},{t:47,l:2},{t:47.5,l:3}]},
+  {id:1,emoji:'🎻',name:'엘가 사랑의 인사',composer:'엘가 · 1888',diff:2,bpm:80,instrument:'strings',duration:52,bgColor:'#0a1a30',melody:[[330,1,1],[370,.5,1],[330,.5,1],[294,1,1],[330,2,1],[330,1,1],[370,.5,1],[330,.5,1],[349,1,1],[294,2,1],[370,1,1],[415,.5,1],[370,.5,1],[330,1,1],[294,2,1],[294,1,1],[330,.5,1],[349,.5,1],[330,1,1],[262,2,1]],beatmap:genBeatmap(52,1.5,1.5)},
+  {id:2,emoji:'🥁',name:'라데츠키 행진곡',composer:'슈트라우스 1세 · 1848',diff:4,bpm:132,instrument:'brass',duration:48,bgColor:'#200a0a',melody:[[392,.5,1],[392,.5,1],[440,.5,1],[392,.5,1],[349,.5,1],[392,2,1],[349,.5,1],[349,.5,1],[392,.5,1],[349,.5,1],[330,.5,1],[349,2,1],[330,.5,1],[330,.5,1],[349,.5,1],[330,.5,1],[294,.5,1],[330,2,1],[392,.5,1],[440,.5,1],[494,1,1],[440,1,1],[392,2,1]],beatmap:genBeatmap(48,.45,.9)},
+  {id:3,emoji:'🌊',name:'드보르자크 신세계 교향곡',composer:'드보르자크 · 1893',diff:3,bpm:90,instrument:'strings',duration:52,bgColor:'#001a20',melody:[[0,2,1],[294,2,1],[330,1,1],[294,1,1],[220,2,1],[0,2,1],[294,2,1],[330,1,1],[370,1,1],[440,4,1],[0,2,1],[392,2,1],[330,1,1],[294,1,1],[220,4,1]],beatmap:genBeatmap(52,1.35,2)},
+  {id:4,emoji:'🔔',name:'모차르트 터키 행진곡',composer:'모차르트 · 1783',diff:4,bpm:148,instrument:'piano',duration:48,bgColor:'#1a1a00',melody:[[440,.5,1],[415,.25,1],[440,.25,1],[415,.25,1],[440,.25,1],[349,.5,1],[392,.5,1],[330,.5,1],[0,.5,1],[262,.5,1],[330,.5,1],[440,1,1],[415,.5,1],[440,.25,1],[415,.25,1],[440,.25,1],[415,.25,1],[349,.5,1],[392,.5,1],[330,.5,1],[440,.5,1],[330,.5,1],[262,1,1],[0,1,1]],beatmap:genBeatmap(48,.4,.8)},
+  {id:5,emoji:'🌙',name:'베토벤 월광 소나타',composer:'베토벤 · 1801',diff:2,bpm:60,instrument:'piano',duration:50,bgColor:'#000d20',melody:[[207,.67,1],[247,.67,1],[311,.67,1],[207,.67,1],[247,.67,1],[311,.67,1],[220,.67,1],[261,.67,1],[330,.67,1],[220,.67,1],[261,.67,1],[330,.67,1],[233,.67,1],[277,.67,1],[349,.67,1],[233,.67,1],[277,.67,1],[349,.67,1]],beatmap:genBeatmap(50,1.35,1.3)},
+  {id:6,emoji:'💃',name:'비발디 사계 - 봄',composer:'비발디 · 1725',diff:4,bpm:130,instrument:'strings',duration:48,bgColor:'#0a2010',melody:[[659,.5,1],[659,.5,1],[659,.5,1],[523,.25,1],[587,.25,1],[659,2,1],[523,.5,1],[523,.5,1],[523,.5,1],[659,.5,1],[587,.5,1],[587,.5,1],[587,.5,1],[659,.25,1],[698,.25,1],[784,2,1],[659,.5,1],[698,.5,1],[784,.5,1],[880,.5,1]],beatmap:genBeatmap(48,.46,.9)},
+  {id:7,emoji:'⚡',name:'베토벤 환희의 송가',composer:'베토벤 · 1824',diff:5,bpm:120,instrument:'brass',duration:50,bgColor:'#150a00',melody:[[330,.5,1],[330,.5,1],[349,.5,1],[392,.5,1],[392,.5,1],[349,.5,1],[330,.5,1],[294,.5,1],[262,.5,1],[262,.5,1],[294,.5,1],[330,.5,1],[330,.75,1],[294,.25,1],[294,2,1],[330,.5,1],[330,.5,1],[349,.5,1],[392,.5,1],[392,.5,1],[349,.5,1],[330,.5,1],[294,.5,1],[262,.5,1],[262,.5,1],[294,.5,1],[330,.5,1],[294,.75,1],[262,.25,1],[262,2,1]],beatmap:genBeatmap(50,.5,1)},
+  {id:8,emoji:'🎺',name:'헨델 메시아 할렐루야',composer:'헨델 · 1741',diff:3,bpm:100,instrument:'brass',duration:50,bgColor:'#1a1000',melody:[[392,.5,1],[392,.5,1],[392,.5,1],[392,.5,1],[392,1,1],[392,.5,1],[392,.5,1],[440,.5,1],[392,.5,1],[349,1,1],[330,1,1],[330,.5,1],[349,.5,1],[392,1,1],[392,1,1],[440,1,1],[440,1,1],[494,.5,1],[440,.5,1],[392,2,1]],beatmap:genBeatmap(50,.6,1.2)},
+  {id:9,emoji:'🦢',name:'차이콥스키 백조의 호수',composer:'차이콥스키 · 1876',diff:3,bpm:72,instrument:'strings',duration:52,bgColor:'#000820',melody:[[494,1,1],[440,.5,1],[466,.5,1],[494,2,1],[0,1,1],[440,1,1],[494,2,1],[466,1,1],[440,1,1],[392,4,1],[0,1,1],[440,1,1],[494,1,1],[440,.5,1],[466,.5,1],[494,2,1],[0,1,1],[440,1,1],[494,2,1],[466,1,1],[440,2,1]],beatmap:genBeatmap(52,1.67,1.7)}
+];
+
+let selectedSongId=null;
+function buildSongGrid(){
+  const grid=document.getElementById('song-grid');
+  SONGS.forEach(song=>{
+    const card=document.createElement('div');card.className='song-card';card.id=`sc-${song.id}`;
+    card.innerHTML=`<div class="song-emoji">${song.emoji}</div><div><div class="song-name">${song.name}</div><div class="song-composer">${song.composer}</div><div class="song-diff">${'⭐'.repeat(song.diff)}${'☆'.repeat(5-song.diff)}</div></div>`;
+    card.addEventListener('click',()=>selectSong(song.id));
+    grid.appendChild(card);
+  });
+}
+function selectSong(id){selectedSongId=id;document.querySelectorAll('.song-card').forEach(c=>c.classList.remove('selected'));document.getElementById(`sc-${id}`).classList.add('selected');document.getElementById('play-btn').disabled=false;}
+function startSelectedSong(){if(selectedSongId===null)return;document.getElementById('song-select').style.display='none';initAudio();beginGame(SONGS.find(s=>s.id===selectedSongId));}
+function goSongSelect(){stopMusic();gameRunning=false;document.querySelectorAll('.note').forEach(n=>n.remove());document.getElementById('result-screen').style.display='none';document.getElementById('song-select').style.display='flex';}
+
+const LANES=[
+  {key:'D',color:'#ff6b6b',glow:'#ff4444'},
+  {key:'F',color:'#ffd93d',glow:'#ffcc00'},
+  {key:'J',color:'#6bffb8',glow:'#00ffaa'},
+  {key:'K',color:'#88bbff',glow:'#4499ff'},
+];
+const DRUM_TOPS=['radial-gradient(ellipse at 32% 28%,#ffaaaa,#cc2222)','radial-gradient(ellipse at 32% 28%,#ffe080,#cc9900)','radial-gradient(ellipse at 32% 28%,#88ffcc,#009955)','radial-gradient(ellipse at 32% 28%,#88ccff,#1155cc)'];
+const LANE_CX=[87,262,437,612];
+const NOTE_SPD=210,HIT_Y=284,WIN_P=52,WIN_G=92;
+
+let score=0,combo=0,maxCombo=0,life=3,perfectCnt=0,goodCnt=0,missCnt=0;
+let spawnedNotes=[],nidCtr=0,gameRunning=false,lastTime=null,songTime=0;
+let curSong=null,bmIndex=0,curBeatmap=[];
+
+function buildDrums(){
+  const wrap=document.getElementById('drum-wrapper');
+  LANES.forEach((lane,i)=>{
+    const div=document.createElement('div');div.className='drum-btn';div.id=`drum-${i}`;
+    div.style.setProperty('--glow-c',lane.glow);
+    div.innerHTML=`<div class="drum-head-wrap" id="dhw-${i}"><div class="drum-head" id="dh-${i}" style="background:${DRUM_TOPS[i]};"></div><div class="drum-head-shine"></div></div><div class="drum-kettle"></div><div class="drum-legs-row"><div class="drum-leg"></div><div class="drum-leg"></div></div><div class="drum-key-label">${lane.key}</div>`;
+    div.addEventListener('mousedown',()=>handleHit(i));
+    div.addEventListener('touchstart',e=>{e.preventDefault();handleHit(i);});
+    wrap.appendChild(div);
+  });
+}
+
+// SPLASH SYSTEM
+const sCanvas=document.getElementById('splash-canvas');
+const sCtx=sCanvas.getContext('2d');
+let splashParts=[];
+let splashRAF=null;
+
+function addSplash(x,li){
+  const col=LANES[li].color,glow=LANES[li].glow;
+  const drumY=140;
+  // Water droplets
+  for(let i=0;i<30;i++){
+    const a=(Math.PI*2/30)*i+(Math.random()-.5)*.35;
+    const sp=2+Math.random()*4;
+    splashParts.push({x,y:drumY,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-5,sz:2+Math.random()*5,col,glow,alpha:1,grav:.3,type:'drop'});
+  }
+  // Big arc drops
+  for(let i=0;i<12;i++){
+    const a=-Math.PI*.5+(Math.random()-.5)*Math.PI*1.6;
+    const sp=4.5+Math.random()*5.5;
+    splashParts.push({x,y:drumY,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,sz:5+Math.random()*8,col,glow,alpha:.92,grav:.38,type:'big'});
+  }
+  // Expanding rings
+  for(let r=0;r<4;r++){
+    splashParts.push({x,y:drumY,sz:6+r*10,gsp:3+r*1.5,col,glow,alpha:.9-r*.12,type:'ring'});
+  }
+  // Star sparks
+  for(let i=0;i<10;i++){
+    const a=(Math.PI*2/10)*i;const d=12+Math.random()*22;
+    splashParts.push({x:x+Math.cos(a)*d,y:drumY+Math.sin(a)*d*.45,vx:Math.cos(a)*.7,vy:Math.sin(a)*.7-1.2,sz:2.5+Math.random()*4,col:'#ffffff',glow:'#ffffff',alpha:1,grav:.12,type:'spark'});
+  }
+  if(!splashRAF)runSplash();
+}
+
+function runSplash(){
+  sCtx.clearRect(0,0,700,230);
+  for(let i=splashParts.length-1;i>=0;i--){
+    const p=splashParts[i];
+    if(p.type==='ring'){
+      p.sz+=p.gsp;p.alpha-=.028;
+      if(p.alpha<=0){splashParts.splice(i,1);continue;}
+      sCtx.save();sCtx.globalAlpha=p.alpha;sCtx.strokeStyle=p.glow;sCtx.lineWidth=2.8;
+      sCtx.shadowBlur=14;sCtx.shadowColor=p.glow;
+      sCtx.beginPath();sCtx.ellipse(p.x,p.y,p.sz,p.sz*.36,0,0,Math.PI*2);sCtx.stroke();sCtx.restore();
+    } else {
+      p.x+=p.vx;p.y+=p.vy;p.vy+=p.grav;p.vx*=.975;
+      p.alpha-=p.type==='big'?.022:p.type==='spark'?.055:.038;
+      if(p.alpha<=0){splashParts.splice(i,1);continue;}
+      sCtx.save();sCtx.globalAlpha=p.alpha;sCtx.fillStyle=p.col;
+      sCtx.shadowBlur=p.type==='spark'?14:9;sCtx.shadowColor=p.glow;
+      const stretch=p.type!=='spark'?1+Math.abs(p.vy)*.12:1;
+      sCtx.beginPath();
+      const angle=p.type!=='spark'?Math.atan2(p.vy,p.vx):0;
+      sCtx.ellipse(p.x,p.y,p.sz*.55,p.sz*stretch*.55,angle,0,Math.PI*2);
+      sCtx.fill();sCtx.restore();
+    }
+  }
+  if(splashParts.length>0)splashRAF=requestAnimationFrame(runSplash);
+  else splashRAF=null;
+}
+
+function triggerDrumVibration(li){
+  const drum=document.getElementById(`drum-${li}`);
+  const hw=document.getElementById(`dhw-${li}`);
+  drum.classList.add('pressed','glowing');
+  for(let i=0;i<2;i++){const r=document.createElement('div');r.className=i?'drum-ring2':'drum-ring';r.style.borderColor=LANES[li].color;hw.appendChild(r);setTimeout(()=>r.remove(),620);}
+  setTimeout(()=>drum.classList.remove('pressed','glowing'),360);
+}
+
+// MUSIC NOTE SVG
+function makeMusicNote(col,glow,nid){
+  return `<svg viewBox="0 0 40 62" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;filter:drop-shadow(0 0 5px ${glow}) drop-shadow(0 0 11px ${glow});">
+    <defs><radialGradient id="ng${nid}" cx="38%" cy="33%"><stop offset="0%" stop-color="white" stop-opacity=".78"/><stop offset="55%" stop-color="${col}"/><stop offset="100%" stop-color="${glow}"/></radialGradient></defs>
+    <ellipse cx="14" cy="49" rx="12" ry="8.5" fill="url(#ng${nid})" stroke="${glow}" stroke-width="1.5" transform="rotate(-20,14,49)"/>
+    <line x1="24.5" y1="44.5" x2="24.5" y2="10" stroke="${col}" stroke-width="3" stroke-linecap="round"/>
+    <path d="M24.5 10 Q40 18 33 32 Q29 23 24.5 23" fill="${col}" stroke="${glow}" stroke-width="1"/>
+    <ellipse cx="11" cy="46" rx="4.5" ry="2.8" fill="white" opacity=".32" transform="rotate(-20,11,46)"/>
+  </svg>`;
+}
+
+function createNoteEl(note){
+  const el=document.createElement('div');el.className='note';el.id=`n-${note.id}`;
+  el.style.left=(LANE_CX[note.lane]-20)+'px';el.style.top='-62px';
+  el.innerHTML=makeMusicNote(LANES[note.lane].color,LANES[note.lane].glow,note.id);
+  document.getElementById('notes-area').appendChild(el);return el;
+}
+
+function beginGame(song){
+  curSong=song;
+  document.body.style.background=`linear-gradient(160deg,${song.bgColor} 0%,#0a1540 60%,#001428 100%)`;
+  document.getElementById('song-title-hud').textContent=`${song.emoji} ${song.name}`;
+  score=0;combo=0;maxCombo=0;life=3;perfectCnt=0;goodCnt=0;missCnt=0;
+  songTime=0;bmIndex=0;spawnedNotes=[];splashParts=[];
+  document.querySelectorAll('.note').forEach(n=>n.remove());
+  curBeatmap=song.beatmap.map(n=>({t:n.t,lane:n.l,id:nidCtr++,hit:false,missed:false,spawned:false,y:-62,el:null}));
+  curBeatmap.sort((a,b)=>a.t-b.t);
+  playMelodyBackground(song.melody,song.bpm,song.instrument);
+  updateHUD();lastTime=null;gameRunning=true;requestAnimationFrame(gameLoop);
+}
+
+function gameLoop(ts){
+  if(!gameRunning)return;
+  if(!lastTime)lastTime=ts;
+  const dt=(ts-lastTime)/1000;lastTime=ts;songTime+=dt;
+  document.getElementById('progress-bar').style.width=Math.min(100,songTime/curSong.duration*100)+'%';
+  while(bmIndex<curBeatmap.length&&curBeatmap[bmIndex].t<=songTime+2.2){const n=curBeatmap[bmIndex];if(!n.spawned){n.spawned=true;n.el=createNoteEl(n);spawnedNotes.push(n);}bmIndex++;}
+  for(let i=spawnedNotes.length-1;i>=0;i--){const n=spawnedNotes[i];if(n.hit||n.missed){spawnedNotes.splice(i,1);continue;}n.y=HIT_Y-(n.t-songTime)*NOTE_SPD;if(n.el)n.el.style.top=n.y+'px';if(songTime>n.t+.38&&!n.hit){n.missed=true;missNote(n);spawnedNotes.splice(i,1);}}
+  if(songTime>=curSong.duration&&spawnedNotes.length===0&&bmIndex>=curBeatmap.length){endGame();return;}
+  requestAnimationFrame(gameLoop);
+}
+
+function handleHit(lane){
+  if(!gameRunning)return;
+  initAudio();playRealisticTimpani(lane);triggerDrumVibration(lane);bounceBread();
+  addSplash(LANE_CX[lane],lane);
+  let best=null,bestD=Infinity;
+  for(const n of spawnedNotes){if(n.lane!==lane||n.hit||n.missed)continue;const d=Math.abs(n.y-HIT_Y);if(d<bestD){bestD=d;best=n;}}
+  if(best&&bestD<=WIN_G){
+    best.hit=true;if(best.el){best.el.remove();best.el=null;}
+    if(bestD<=WIN_P){score+=300+combo*3;combo++;perfectCnt++;showJudge('완벽! ✨',lane,'#ffe44d');}
+    else{score+=100+combo;combo++;goodCnt++;showJudge('좋아요! 👍',lane,'#6bffb8');}
+    if(combo>maxCombo)maxCombo=combo;
+  }
+  updateHUD();
+}
+function missNote(n){if(n.el){n.el.style.opacity='.2';setTimeout(()=>n.el&&n.el.remove(),160);}combo=0;missCnt++;life--;showJudge('놓침 💨',n.lane,'#ff6b6b');updateHUD();if(life<=0)endGame();}
+function updateHUD(){document.getElementById('score').textContent=score.toLocaleString();document.getElementById('combo-display').textContent=combo>=3?`🔥${combo}콤보`:'';document.getElementById('life-display').textContent='❤️'.repeat(Math.max(0,life))+'🖤'.repeat(Math.max(0,3-life));}
+function showJudge(txt,lane,color){const el=document.createElement('div');el.className='judgment';el.textContent=txt;el.style.color=color;el.style.left=(LANE_CX[lane]-60)+'px';el.style.top=(HIT_Y-40)+'px';document.getElementById('notes-area').appendChild(el);setTimeout(()=>el.remove(),750);}
+function bounceBread(){const b=document.getElementById('bread-char');b.classList.remove('bounce');void b.offsetWidth;b.classList.add('bounce');}
+function endGame(){gameRunning=false;stopMusic();document.querySelectorAll('.note').forEach(n=>n.remove());document.getElementById('result-screen').style.display='flex';document.getElementById('final-score').textContent=score.toLocaleString();document.getElementById('res-perfect').textContent=perfectCnt;document.getElementById('res-good').textContent=goodCnt;document.getElementById('res-miss').textContent=missCnt;document.getElementById('res-combo').textContent=maxCombo;const total=perfectCnt+goodCnt+missCnt;const acc=total>0?Math.round((perfectCnt+goodCnt)/total*100):0;document.getElementById('result-title').textContent=acc>=95?'🏆 마에스트로!':acc>=80?'🎉 브라보!':acc>=60?'👏 잘했어요!':'💪 다시 도전!';}
+function replaySong(){document.getElementById('result-screen').style.display='none';initAudio();beginGame(curSong);}
+const keyMap={'d':0,'f':1,'j':2,'k':3};
+document.addEventListener('keydown',e=>{const lane=keyMap[e.key.toLowerCase()];if(lane!==undefined&&!e.repeat)handleHit(lane);});
+buildDrums();buildSongGrid();
+</script>
+</body>
+</html>
