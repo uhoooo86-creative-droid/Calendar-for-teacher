@@ -2,1230 +2,705 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>베토벤 운명 교향곡 · 팀파니</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>BIG CAT 수업 캘린더 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Black+Han+Sans&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jua&display=swap');
-
-*{margin:0;padding:0;box-sizing:border-box;}
-
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --paper:#f7f2e4;
-  --paper-dark:#ede4c8;
-  --ink:#1a1000;
-  --ink2:#3a2800;
-  --gold:#b8860b;
-  --gold2:#d4a820;
-  --C:#c0392b;   /* C drum = red */
-  --G:#1a5276;   /* G drum = blue */
-  --C-l:#e74c3c;
-  --G-l:#2980b9;
+  --paper:#FFFDF7;--ink:#1A1208;--muted:#8A7B6A;--line:#E8E0D0;--surf:#F5F0E8;
+  --c1:#E85D26;--c2:#3B82C4;--c3:#2AA876;--c4:#C4960A;--c5:#8B4DB8;
+  --red:#D94F3D;--green:#2AA876;--amber:#C4960A;
 }
+body{font-family:'Gowun Dodum',sans-serif;background:var(--paper);color:var(--ink);max-width:480px;margin:0 auto;padding-bottom:70px;}
 
-body{
-  background:radial-gradient(ellipse at 50% 20%, #1a0f00 0%, #050300 100%);
-  min-height:100vh;
-  font-family:'Jua',sans-serif;
-  overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-}
+/* NAV */
+.bnav{display:flex;border-top:1px solid var(--line);background:var(--paper);padding:4px 0 8px;position:sticky;bottom:0;z-index:40;}
+.bi{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;padding:5px 2px;border:none;background:transparent;font-family:'Gowun Dodum',sans-serif;}
+.bi-ic{font-size:20px;}
+.bi-lb{font-size:9px;color:var(--muted);}
+.bi.on .bi-lb{color:var(--c2);font-weight:500;}
+.bi-link{text-decoration:none;}
+.bi-link .bi-lb{color:var(--muted);}
+.bi-link:hover .bi-lb{color:var(--ink);}
 
-/* ══ TITLE SCREEN ══ */
-#title-screen{
-  position:fixed;inset:0;
-  background:radial-gradient(ellipse at 50% 35%, #1e1200 0%, #050200 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:300;gap:18px;padding:24px;
-}
-.title-ornament{color:var(--gold);font-size:28px;letter-spacing:12px;opacity:.7;}
-#title-screen h1{
-  font-family:'Crimson Pro',serif;
-  font-size:48px;color:var(--paper);
-  text-shadow:0 0 40px rgba(180,130,10,.5),0 3px 0 #3a2800;
-  letter-spacing:4px;text-align:center;line-height:1.2;
-}
-#title-screen .subtitle{
-  font-family:'Crimson Pro',serif;font-style:italic;
-  font-size:20px;color:var(--gold2);
-  letter-spacing:3px;
-}
-.score-preview{
-  width:560px;background:var(--paper);
-  border:2px solid var(--gold);border-radius:2px;
-  padding:18px 22px;
-  box-shadow:0 0 60px rgba(180,130,10,.2), inset 0 0 30px rgba(180,130,10,.05);
-}
-.score-preview h3{
-  font-family:'Crimson Pro',serif;font-size:15px;
-  color:var(--ink2);margin-bottom:10px;text-align:center;
-  border-bottom:1px solid rgba(100,70,10,.2);padding-bottom:8px;
-}
-.drum-info{display:flex;gap:24px;justify-content:center;margin-top:8px;}
-.drum-badge{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);}
-.drum-dot{width:18px;height:12px;border-radius:50%;border:2px solid rgba(0,0,0,.2);}
-.dot-C{background:var(--C);}
-.dot-G{background:var(--G);}
-.key-hint{font-size:13px;color:#888;text-align:center;margin-top:6px;}
-.start-btn{
-  font-family:'Jua',sans-serif;font-size:22px;
-  background:linear-gradient(135deg,var(--gold2),#8b6008);
-  color:#1a0a00;border:none;padding:14px 56px;border-radius:2px;
-  cursor:pointer;letter-spacing:3px;
-  box-shadow:0 4px 24px rgba(180,130,10,.4), inset 0 1px 0 rgba(255,255,255,.15);
-  transition:all .15s;
-}
-.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(180,130,10,.5);}
+/* PAGES */
+.pg{display:none;padding:12px;}
+.pg.on{display:block;}
 
-/* ══ GAME LAYOUT ══ */
-#game-wrap{
-  position:relative;width:960px;
-  display:flex;flex-direction:column;align-items:center;
-  z-index:1;
-}
+/* HEADER */
+.ph{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-top:4px;}
+.ph h1{font-family:'Black Han Sans',sans-serif;font-size:20px;flex:1;}
+.ph-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.nav-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-top:4px;}
+.nav-row h2{font-family:'Black Han Sans',sans-serif;font-size:17px;flex:1;text-align:center;}
 
-/* HUD */
-#hud{
-  width:960px;display:flex;justify-content:space-between;align-items:center;
-  padding:5px 18px 3px;
-}
-#score-display{font-size:22px;color:var(--gold2);text-shadow:0 0 10px rgba(200,150,10,.4);}
-#center-hud{display:flex;flex-direction:column;align-items:center;gap:1px;}
-#song-name{font-family:'Crimson Pro',serif;font-style:italic;font-size:14px;color:#c8a86a;}
-#movement-name{font-size:11px;color:#8a7050;letter-spacing:1px;}
-#combo-display{font-size:17px;color:#e8c870;min-width:110px;text-align:right;}
-#life-display{font-size:17px;}
-#progress-bar-wrap{width:960px;height:3px;background:rgba(255,255,255,.07);margin-bottom:2px;}
-#progress-bar{height:100%;background:linear-gradient(90deg,var(--gold),#c05020);width:0%;transition:width .15s;}
+/* BUTTONS */
+.btn-pri{width:100%;padding:13px;background:var(--ink);color:var(--paper);border:none;border-radius:10px;font-family:'Black Han Sans',sans-serif;font-size:15px;cursor:pointer;letter-spacing:.5px;margin-top:6px;}
+.btn-sm{padding:7px 13px;border:1px solid var(--line);border-radius:8px;background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;color:var(--ink);}
+.btn-add{width:100%;padding:10px;border:1px dashed var(--line);border-radius:8px;background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;margin-bottom:8px;}
+.btn-del{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-/* ══ SCORE SHEET ══ */
-#score-panel{
-  width:960px;
-  background:var(--paper);
-  border-top:3px solid #8a6010;
-  border-bottom:3px solid #8a6010;
-  border-left:2px solid #a07820;
-  border-right:2px solid #a07820;
-  position:relative;overflow:hidden;
-}
-#score-panel::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:
-    linear-gradient(90deg,rgba(160,120,40,.04) 0 1px,transparent 1px) 0 0 / 80px 100%,
-    linear-gradient(0deg,rgba(160,120,40,.03) 0 1px,transparent 1px) 0 0 / 100% 20px;
-}
-#staff-canvas{display:block;width:960px;}
+/* CARDS */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;}
+.card-title{font-size:12px;color:var(--muted);letter-spacing:.5px;margin-bottom:10px;}
 
-/* Cursor */
-#cursor-wrap{position:absolute;top:0;bottom:0;pointer-events:none;z-index:10;}
-#cursor-line{position:absolute;top:0;bottom:0;width:2px;background:rgba(180,40,10,.7);box-shadow:0 0 10px rgba(200,50,10,.5);}
-#cursor-glow{position:absolute;top:0;bottom:0;left:-14px;width:30px;background:linear-gradient(90deg,transparent,rgba(200,80,20,.08),transparent);}
+/* FIELDS */
+.field{margin-bottom:10px;}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;}
+.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Gowun Dodum',sans-serif;font-size:14px;background:var(--paper);color:var(--ink);outline:none;}
+.field input:focus,.field textarea:focus{border-color:var(--c2);}
+.field textarea{resize:vertical;min-height:60px;}
+.inline-input{border:none;border-bottom:1px dashed var(--line);background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:14px;outline:none;color:var(--ink);padding:2px 4px;}
 
-/* Judgment */
-.judgment{
-  position:absolute;font-size:20px;font-family:'Jua',sans-serif;
-  pointer-events:none;animation:jPop .65s forwards;z-index:25;
-}
-@keyframes jPop{
-  0%{transform:scale(.3) translateY(0);opacity:1;}
-  50%{transform:scale(1.15) translateY(-14px);opacity:1;}
-  100%{transform:scale(1) translateY(-30px);opacity:0;}
-}
+/* DAY PILLS */
+.dpills{display:flex;gap:4px;flex-wrap:wrap;}
+.dp{width:33px;height:33px;border-radius:50%;border:1px solid var(--line);background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:12px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;}
+.dp.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.dp[data-d="0"].on{background:var(--red);border-color:var(--red);}
+.dp[data-d="6"].on{background:var(--c2);border-color:var(--c2);}
 
-/* ══ STAGE ══ */
-#stage{
-  width:960px;height:200px;position:relative;
-  background:linear-gradient(180deg,#14100a 0%,#060400 100%);
-  border-bottom:2px solid #3a2800;
-  display:flex;align-items:flex-end;justify-content:center;
-  overflow:hidden;
-}
-#splash-canvas{position:absolute;top:0;left:0;width:960px;height:200px;pointer-events:none;z-index:20;}
-#stage-light{
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:500px;height:100%;
-  background:radial-gradient(ellipse at 50% 0%,rgba(80,60,20,.12),transparent 70%);
-  pointer-events:none;
-}
+/* COLOR DOTS */
+.cdots{display:flex;gap:5px;flex-wrap:wrap;}
+.cdot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s;}
+.cdot.on{border-color:var(--ink);transform:scale(1.15);}
 
-.drum-area{
-  display:flex;align-items:flex-end;justify-content:center;
-  gap:80px;padding-bottom:10px;z-index:10;position:relative;
-}
+/* WON CARD */
+.won-card{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.won-header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--surf);}
+.won-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+.won-title-input{flex:1;font-size:15px;font-weight:500;font-family:'Gowun Dodum',sans-serif;border:none;background:transparent;outline:none;color:var(--ink);}
+.won-body{padding:12px 14px;}
+.won-fields-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 
-/* Single drum (timpani view from front) */
-.timpani{
-  display:flex;flex-direction:column;align-items:center;
-  cursor:pointer;user-select:none;position:relative;
-  transition:transform .07s;
-}
-.timpani:active,.timpani.hit{transform:scale(.91) translateY(5px);}
+/* CLASS GROUPS (반) */
+.class-list{margin-top:8px;}
+.class-row{display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid var(--line);}
+.class-row:last-child{border-bottom:none;}
+.class-badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:500;flex-shrink:0;}
+.class-input{flex:1;font-size:13px;font-family:'Gowun Dodum',sans-serif;border:none;border-bottom:1px dashed var(--line);background:transparent;outline:none;color:var(--ink);padding:1px 3px;}
 
-@keyframes memVibrate{
-  0%{transform:scaleX(1) scaleY(1);}
-  10%{transform:scaleX(1.08) scaleY(.84);}
-  25%{transform:scaleX(.94) scaleY(1.08);}
-  45%{transform:scaleX(1.05) scaleY(.93);}
-  65%{transform:scaleX(.97) scaleY(1.05);}
-  100%{transform:scaleX(1) scaleY(1);}
-}
-.mem.vibrate{animation:memVibrate .5s ease-out;}
-.timpani.glow-C .mem{filter:brightness(1.8) drop-shadow(0 0 20px var(--C-l));}
-.timpani.glow-G .mem{filter:brightness(1.8) drop-shadow(0 0 20px var(--G-l));}
+/* WEEK */
+.week-strip{display:flex;gap:3px;overflow-x:auto;padding-bottom:2px;margin-bottom:4px;}
+.wday{flex:0 0 calc(100%/7 - 3px);min-width:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper);}
+.wday.today{border:2px solid var(--ink);}
+.wday-hd{padding:4px 2px;text-align:center;font-size:11px;font-weight:500;background:var(--ink);color:var(--paper);}
+.wday-hd.sun{background:var(--red);}
+.wday-hd.sat{background:var(--c2);}
+.wday-date{font-size:9px;opacity:.65;}
+.wday-body{padding:3px 2px;min-height:55px;}
+.lchip{padding:3px 4px;border-radius:5px;margin-bottom:2px;font-size:9px;border-left:2px solid transparent;background:var(--surf);cursor:pointer;user-select:none;}
+.lchip-name{font-size:10px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lchip-meta{color:var(--muted);font-size:8px;}
+.wday-plus{text-align:center;font-size:16px;color:var(--muted);padding:2px;cursor:pointer;}
 
-.mem{
-  width:160px;height:66px;border-radius:50%;
-  border:4px solid rgba(255,255,255,.25);
-  transition:filter .12s;position:relative;z-index:2;
-  transform-origin:center;
-}
-.mem-C{background:radial-gradient(ellipse at 32% 30%,#f19898,#a01818);}
-.mem-G{background:radial-gradient(ellipse at 32% 30%,#88b8e8,#0e3d6a);}
-.mem::after{
-  content:'';position:absolute;top:7px;left:20px;right:20px;height:14px;
-  background:rgba(255,255,255,.24);border-radius:50%;
-}
-/* Bowl body */
-.bowl{
-  width:130px;height:78px;
-  border-radius:0 0 65px 65px;
-  border:3px solid #1a1000;margin-top:-6px;
-  position:relative;
-}
-.bowl-C{background:linear-gradient(180deg,#7a5c2a 0%,#3a2208 100%);}
-.bowl-G{background:linear-gradient(180deg,#5a6a7a 0%,#1a2430 100%);}
-.bowl::before{
-  content:'';position:absolute;left:12px;right:12px;top:8px;bottom:12px;
-  border-top:2px solid rgba(255,220,100,.12);
-  border-radius:0 0 55px 55px;
-}
-/* Legs */
-.legs{display:flex;justify-content:space-between;width:140px;margin-top:2px;}
-.leg{
-  width:8px;height:38px;
-  background:linear-gradient(90deg,#bbb,#666);
-  border-radius:4px;margin:0 16px;
-}
-/* Key label */
-.drum-key-label{
-  font-size:18px;color:rgba(255,255,255,.9);margin-top:6px;
-  background:rgba(0,0,0,.6);padding:3px 14px;border-radius:4px;
-  border:1px solid rgba(255,255,255,.15);letter-spacing:2px;
-}
-.drum-name{
-  font-family:'Crimson Pro',serif;font-size:13px;
-  color:rgba(255,255,255,.55);margin-top:2px;
-  font-style:italic;letter-spacing:1px;
-}
+/* MONTH */
+.dow-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px;}
+.dow-hdr span{text-align:center;font-size:11px;color:var(--muted);padding:3px 0;}
+.dow-hdr span:first-child{color:var(--red);}
+.dow-hdr span:last-child{color:var(--c2);}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.mcell{min-height:52px;border:0.5px solid var(--line);border-radius:5px;padding:3px 2px;background:var(--paper);position:relative;}
+.mcell.other{opacity:.22;}
+.mcell.today{border:1.5px solid var(--ink);}
+.mdate{font-size:10px;font-weight:500;color:var(--muted);margin-bottom:2px;}
+.mdate.sun{color:var(--red);}
+.mdate.sat{color:var(--c2);}
+.mchip{display:block;padding:2px 3px;border-radius:3px;font-size:8px;margin-bottom:1px;border-left:2px solid transparent;background:var(--surf);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;user-select:none;}
 
-/* Drum ring ripples */
-.drum-ring{position:absolute;border-radius:50%;top:0;left:0;border:2.5px solid;opacity:0;pointer-events:none;z-index:15;}
-@keyframes ringExp{0%{transform:scale(.4);opacity:.95;}100%{transform:scale(3);opacity:0;}}
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.sc{background:var(--surf);border-radius:8px;padding:11px;}
+.sc-lb{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.sc-val{font-size:22px;font-weight:500;}
+.sc-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.bar-row{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+.bar-lb{font-size:11px;min-width:64px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-tr{flex:1;height:9px;background:var(--surf);border-radius:5px;overflow:hidden;}
+.bar-fi{height:100%;border-radius:5px;}
+.bar-ct{font-size:10px;color:var(--muted);min-width:22px;text-align:right;}
+.mtabs{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;}
+.mtab{padding:5px 9px;border:0.5px solid var(--line);border-radius:16px;font-size:11px;cursor:pointer;background:var(--paper);color:var(--muted);font-family:'Gowun Dodum',sans-serif;}
+.mtab.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
 
-/* Bread character */
-#bread-char{
-  position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
-  width:72px;z-index:12;
-}
-#bread-char.bounce{animation:bBounce .22s ease;}
-@keyframes bBounce{
-  0%{transform:translateX(-50%) scaleY(1);}
-  25%{transform:translateX(-50%) scaleY(.78) scaleX(1.18);}
-  65%{transform:translateX(-50%) scaleY(1.08);}
-  100%{transform:translateX(-50%) scaleY(1);}
-}
+/* HISTORY */
+.wsel-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.wsel{padding:6px 11px;border:0.5px solid var(--line);border-radius:16px;font-size:12px;cursor:pointer;background:var(--paper);color:var(--muted);font-family:'Gowun Dodum',sans-serif;border-left:3px solid transparent;}
+.wsel.on{color:var(--ink);font-weight:500;}
+.memo-row{display:flex;gap:6px;margin-bottom:10px;}
+.memo-row input{flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Gowun Dodum',sans-serif;font-size:13px;background:var(--paper);color:var(--ink);outline:none;}
+.memo-row input:focus{border-color:var(--c2);}
+.memo-row button{padding:9px 13px;background:var(--ink);color:var(--paper);border:none;border-radius:8px;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;}
+.hist-item{border-left:3px solid var(--line);padding:8px 10px;margin-bottom:7px;background:var(--surf);border-radius:0 8px 8px 0;cursor:pointer;}
+.hist-date{font-size:11px;color:var(--muted);margin-bottom:2px;}
+.hist-topic{font-size:14px;font-weight:500;margin-bottom:2px;}
+.hist-note{font-size:12px;color:var(--muted);}
+.hist-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;}
+.htag{padding:2px 6px;border-radius:9px;font-size:9px;background:var(--paper);border:0.5px solid var(--line);}
+.empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:13px;line-height:1.7;}
 
-/* ══ RESULT ══ */
-.overlay{
-  position:fixed;inset:0;background:rgba(3,2,0,.93);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:250;gap:14px;
-}
-.overlay h1{
-  font-family:'Crimson Pro',serif;font-size:48px;
-  color:var(--gold2);text-shadow:0 0 30px rgba(180,130,10,.5);
-  letter-spacing:4px;
-}
-.final-score{font-size:60px;color:var(--gold2);}
-.result-stats{display:flex;gap:24px;font-size:17px;color:#c8b880;}
-.btn{
-  font-family:'Jua',sans-serif;font-size:19px;
-  background:linear-gradient(135deg,var(--gold2),#8b6008);
-  color:#1a0800;border:none;padding:12px 40px;border-radius:2px;
-  cursor:pointer;letter-spacing:2px;box-shadow:0 4px 20px rgba(180,130,10,.35);
-  transition:transform .1s;margin:4px;
-}
-.btn:hover{transform:translateY(-2px);}
-.btn-sec{background:linear-gradient(135deg,#3a5080,#1a2a48);}
+/* STATUS */
+.sbadge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;margin-left:4px;}
+.sbadge.done{background:#E1F5EE;color:#0F6E56;}
+.sbadge.ready{background:#FAEEDA;color:#854F0B;}
+.sbadge.cancel{background:#FCEBEB;color:#A32D2D;}
+
+/* SYMBOLS */
+.sym-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+.sym-btn{padding:4px 7px;border:1px solid var(--line);border-radius:14px;background:transparent;font-size:14px;cursor:pointer;}
+.sym-btn.on{border-color:var(--c1);background:#FFF0E8;}
+
+/* ROUTINE */
+.rtn-box{background:var(--surf);border-radius:8px;padding:10px;}
+.rtn-item{display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:0.5px solid var(--line);}
+.rtn-item:last-child{border-bottom:none;}
+.rchk{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.rchk.done{background:var(--green);border-color:var(--green);color:#fff;}
+.rchk-txt{font-size:13px;flex:1;}
+.rchk-txt.done{text-decoration:line-through;color:var(--muted);}
+.step-note-in{width:100%;border:none;border-bottom:1px dashed var(--line);background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:11px;color:var(--muted);outline:none;padding:2px 0;margin-top:2px;}
+
+/* ── MODALS (in-flow overlay pattern) ── */
+.overlay{display:none;min-height:600px;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+
+/* DETAIL MODAL */
+.detail-modal{background:var(--paper);border-radius:16px 16px 0 0;width:100%;padding:18px;max-height:86vh;overflow-y:auto;}
+.modal-title{font-family:'Black Han Sans',sans-serif;font-size:18px;margin-bottom:2px;}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.status-btns{display:flex;gap:5px;margin-bottom:12px;}
+.st-btn{padding:7px 13px;border:0.5px solid var(--line);border-radius:8px;background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;color:var(--muted);}
+.st-btn.on.ready{background:#FAEEDA;color:#854F0B;border-color:#C4960A;}
+.st-btn.on.done{background:#E1F5EE;color:#0F6E56;border-color:#2AA876;}
+.st-btn.on.cancel{background:#FCEBEB;color:#A32D2D;border-color:#D94F3D;}
+.mbtns{display:flex;gap:8px;margin-top:12px;}
+.mb-close{padding:11px 18px;border:0.5px solid var(--line);border-radius:9px;background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;color:var(--muted);}
+.mb-save{flex:1;padding:11px;background:var(--ink);color:var(--paper);border:none;border-radius:9px;font-family:'Gowun Dodum',sans-serif;font-size:14px;cursor:pointer;}
+
+/* PREVIEW MODAL */
+.preview-modal{background:var(--paper);border-radius:16px 16px 0 0;width:100%;padding:18px;}
+.preview-won-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle;}
+.prev-section{margin-bottom:10px;}
+.prev-label{font-size:10px;color:var(--muted);letter-spacing:.5px;margin-bottom:4px;}
+.prev-val{font-size:14px;}
+.step-preview-row{display:flex;align-items:center;gap:7px;padding:4px 0;font-size:13px;}
+.step-tick{width:16px;height:16px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;}
+.step-tick.done{background:var(--green);color:#fff;}
+.step-tick.undone{background:var(--surf);border:1px solid var(--line);}
+.prev-btns{display:flex;gap:7px;margin-top:14px;}
+.prev-edit{flex:1;padding:11px;background:var(--ink);color:var(--paper);border:none;border-radius:9px;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;}
+.prev-close{padding:11px 16px;border:0.5px solid var(--line);border-radius:9px;background:transparent;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;color:var(--muted);}
 </style>
-</head>
-<body>
 
-<!-- TITLE SCREEN -->
-<div id="title-screen">
-  <div class="title-ornament">✦  ✦  ✦</div>
-  <h1>SYMPHONY No.5<br>in C MINOR</h1>
-  <div class="subtitle">L. van Beethoven, Op.67 · Timpani in C &amp; G</div>
-
-  <div class="score-preview">
-    <h3>Timpani Part · 팀파니 파트</h3>
-    <div class="drum-info">
-      <div class="drum-badge"><div class="drum-dot dot-C"></div> C drum (낮은 C)</div>
-      <div class="drum-badge"><div class="drum-dot dot-G"></div> G drum (낮은 G)</div>
-    </div>
-    <div class="key-hint" style="margin-top:12px;">
-      <strong>F</strong> = C 팀파니 &nbsp;|&nbsp; <strong>J</strong> = G 팀파니<br>
-      (마우스 클릭 또는 화면 터치도 가능)
-    </div>
-  </div>
-
-  <button class="start-btn" onclick="startGame()">▶ &nbsp;연주 시작</button>
-  <div class="title-ornament" style="font-size:16px;">✦  ✦  ✦</div>
+<div class="pg on" id="pg-setup">
+  <div class="ph"><div><h1>🐱 원 설정</h1><div class="ph-sub">원과 반(연령)을 등록하세요</div></div></div>
+  <div id="won-list"></div>
+  <button class="btn-add" onclick="addWon()">＋ 원 추가</button>
+  <div style="font-size:11px;color:var(--muted);letter-spacing:.5px;margin-bottom:8px;margin-top:4px;">수업 루틴</div>
+  <div id="routine-list"></div>
+  <button class="btn-add" onclick="addRoutine()">＋ 루틴 추가</button>
+  <button class="btn-pri" onclick="saveAll()">저장 · 캘린더 적용</button>
 </div>
 
-<!-- RESULT -->
-<div class="overlay" id="result-screen" style="display:none;">
-  <h1 id="result-title">연주 완료</h1>
-  <div class="final-score" id="final-score">0</div>
-  <div class="result-stats">
-    <span>완벽: <span id="res-p" style="color:var(--gold2)">0</span></span>
-    <span>좋음: <span id="res-g" style="color:#88ddaa">0</span></span>
-    <span>놓침: <span id="res-m" style="color:#dd6666">0</span></span>
-    <span>최고콤보: <span id="res-c" style="color:#aabbff">0</span></span>
+<div class="pg" id="pg-weekly">
+  <div class="nav-row">
+    <button class="btn-sm" onclick="weekOff--;renderWeekly()">◀</button>
+    <h2 id="wtitle"></h2>
+    <button class="btn-sm" onclick="weekOff++;renderWeekly()">▶</button>
   </div>
-  <div style="display:flex;gap:10px;">
-    <button class="btn" onclick="restartGame()">🔄 다시 하기</button>
+  <div class="week-strip" id="wstrip"></div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">탭: 기록 · 길게누름: 미리보기</div>
+</div>
+
+<div class="pg" id="pg-monthly">
+  <div class="nav-row">
+    <button class="btn-sm" onclick="prevMon()">◀</button>
+    <h2 id="mtitle"></h2>
+    <button class="btn-sm" onclick="nextMon()">▶</button>
+  </div>
+  <div class="dow-hdr"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+  <div class="mgrid" id="mgrid"></div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">탭: 기록 · 길게누름: 미리보기</div>
+</div>
+
+<div class="pg" id="pg-stats">
+  <div class="ph"><div><h1>📊 수업 통계</h1><div class="ph-sub">2026년 진도 현황</div></div></div>
+  <div class="mtabs" id="stat-tabs"></div>
+  <div class="stat-grid" id="stat-summary"></div>
+  <div class="card"><div class="card-title">원별 수업 횟수</div><div id="stat-bars"></div></div>
+  <div class="card"><div class="card-title">루틴 완료율</div><div id="stat-rtn"></div></div>
+</div>
+
+<div class="pg" id="pg-hist">
+  <div class="ph"><div><h1>📝 학급 히스토리</h1><div class="ph-sub">원·반별 누적 수업 기록</div></div></div>
+  <div class="wsel-row" id="wsel-row"></div>
+  <div id="class-sel-row" style="margin-bottom:10px;display:flex;gap:5px;flex-wrap:wrap;"></div>
+  <div class="memo-row"><input id="memo-in" placeholder="빠른 메모 추가..." /><button onclick="addMemo()">추가</button></div>
+  <div id="hist-list"></div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detail-overlay" style="background:rgba(26,18,8,.5);">
+  <div class="detail-modal">
+    <div class="modal-title" id="dm-title"></div>
+    <div class="modal-sub" id="dm-sub"></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:5px;">아이콘</div>
+    <div class="sym-row" id="dm-syms"></div>
+    <div class="field"><label>수업 주제</label><input id="dm-topic" placeholder="예) Unit 5 - Transport" /></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:5px;">수업 상태</div>
+    <div class="status-btns" id="dm-status-btns">
+      <button class="st-btn on ready" data-s="ready" onclick="setSt('ready')">준비중</button>
+      <button class="st-btn" data-s="done" onclick="setSt('done')">완료</button>
+      <button class="st-btn" data-s="cancel" onclick="setSt('cancel')">취소</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">수업 루틴 체크</div>
+    <div class="rtn-box" id="dm-rtn"></div>
+    <div class="field" style="margin-top:10px;"><label>비고 / 메모</label><textarea id="dm-note" rows="3" placeholder="준비물, 학생 반응, 다음 참고..."></textarea></div>
+    <div class="mbtns">
+      <button class="mb-close" onclick="closeDetail()">닫기</button>
+      <button class="mb-save" onclick="saveLesson()">저장</button>
+    </div>
   </div>
 </div>
 
-<!-- GAME -->
-<div id="game-wrap">
-  <div id="hud">
-    <div id="score-display">점수: <span id="score">0</span></div>
-    <div id="center-hud">
-      <div id="song-name">Symphony No.5 in C Minor</div>
-      <div id="movement-name">ALLEGRO CON BRIO</div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;">
-      <div id="life-display">❤️❤️❤️</div>
-      <div id="combo-display"></div>
+<!-- PREVIEW MODAL -->
+<div class="overlay" id="prev-overlay" style="background:rgba(26,18,8,.5);">
+  <div class="preview-modal">
+    <div id="prev-content"></div>
+    <div class="prev-btns">
+      <button class="prev-close" onclick="closePrev()">닫기</button>
+      <button class="prev-edit" onclick="prevToEdit()">수정하기</button>
     </div>
   </div>
-  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+</div>
 
-  <!-- SHEET MUSIC -->
-  <div id="score-panel">
-    <canvas id="staff-canvas" width="960"></canvas>
-    <div id="cursor-wrap">
-      <div id="cursor-glow"></div>
-      <div id="cursor-line"></div>
-    </div>
-  </div>
-
-  <!-- STAGE -->
-  <div id="stage">
-    <div id="stage-light"></div>
-    <canvas id="splash-canvas" width="960" height="200"></canvas>
-    <div id="bread-char">
-      <svg viewBox="0 0 80 110" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="40" cy="82" rx="20" ry="16" fill="#f4c47a"/>
-        <rect x="22" y="70" width="36" height="20" rx="6" fill="#4a7fd4"/>
-        <rect x="24" y="86" width="15" height="14" rx="3" fill="#f5d020"/>
-        <rect x="41" y="86" width="15" height="14" rx="3" fill="#f5d020"/>
-        <rect x="27" y="98" width="10" height="14" rx="3" fill="#f4c47a"/>
-        <rect x="43" y="98" width="10" height="14" rx="3" fill="#f4c47a"/>
-        <rect x="27" y="108" width="10" height="5" rx="2" fill="white"/>
-        <rect x="43" y="108" width="10" height="5" rx="2" fill="white"/>
-        <ellipse cx="32" cy="114" rx="8" ry="4" fill="#222"/>
-        <ellipse cx="48" cy="114" rx="8" ry="4" fill="#222"/>
-        <line x1="23" y1="78" x2="6" y2="90" stroke="#f4c47a" stroke-width="7" stroke-linecap="round"/>
-        <line x1="57" y1="78" x2="74" y2="90" stroke="#f4c47a" stroke-width="7" stroke-linecap="round"/>
-        <circle cx="5" cy="92" r="5" fill="#8a5520"/>
-        <circle cx="75" cy="92" r="5" fill="#8a5520"/>
-        <rect x="16" y="20" width="48" height="48" rx="10" fill="#f5f0e0"/>
-        <rect x="54" y="20" width="10" height="48" rx="5" fill="#cc3333"/>
-        <ellipse cx="40" cy="20" rx="24" ry="10" fill="#f5f0e0"/>
-        <ellipse cx="32" cy="38" rx="7" ry="8" fill="#222"/>
-        <ellipse cx="48" cy="38" rx="7" ry="8" fill="#222"/>
-        <ellipse cx="30" cy="36" rx="2.5" ry="3" fill="white"/>
-        <ellipse cx="46" cy="36" rx="2.5" ry="3" fill="white"/>
-        <path d="M26 30 Q32 27 38 30" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M42 30 Q48 27 54 30" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M32 52 Q40 60 48 52" stroke="#333" stroke-width="2.5" fill="#cc6655" stroke-linecap="round"/>
-        <ellipse cx="26" cy="46" rx="6" ry="4" fill="#ffaabb" opacity="0.5"/>
-        <ellipse cx="54" cy="46" rx="6" ry="4" fill="#ffaabb" opacity="0.5"/>
+<div class="bnav">
+  <button class="bi on" onclick="nav('setup')"><span class="bi-ic">⚙️</span><span class="bi-lb">설정</span></button>
+  <button class="bi" onclick="nav('weekly')"><span class="bi-ic">📅</span><span class="bi-lb">주간</span></button>
+  <button class="bi" onclick="nav('monthly')"><span class="bi-ic">🗓️</span><span class="bi-lb">월간</span></button>
+  <button class="bi" onclick="nav('stats')"><span class="bi-ic">📊</span><span class="bi-lb">통계</span></button>
+  <button class="bi" onclick="nav('hist')"><span class="bi-ic">📝</span><span class="bi-lb">히스토리</span></button>
+  <a class="bi bi-link" href="https://uhoooo86-creative-droid.github.io/MBTI-teacher-s-Jukebox/" target="_blank" title="BIGCAT Jukebox">
+    <span class="bi-ic bi-play">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="20" height="20" rx="4" fill="#FF0000"/>
+        <polygon points="7.5,5.5 7.5,14.5 15,10" fill="white"/>
       </svg>
-    </div>
-    <div class="drum-area">
-      <!-- C Drum -->
-      <div class="timpani" id="drum-C" onclick="hitDrum(0)">
-        <div class="mem mem-C" id="mem-C"></div>
-        <div class="bowl bowl-C"></div>
-        <div class="legs"><div class="leg"></div><div class="leg"></div></div>
-        <div class="drum-key-label">F</div>
-        <div class="drum-name">Timpani C</div>
-      </div>
-      <!-- G Drum -->
-      <div class="timpani" id="drum-G" onclick="hitDrum(1)">
-        <div class="mem mem-G" id="mem-G"></div>
-        <div class="bowl bowl-G"></div>
-        <div class="legs"><div class="leg"></div><div class="leg"></div></div>
-        <div class="drum-key-label">J</div>
-        <div class="drum-name">Timpani G</div>
-      </div>
-    </div>
-  </div>
+    </span>
+    <span class="bi-lb">쥬크박스</span>
+  </a>
+  <a class="bi bi-link" href="https://uhoooo86-creative-droid.github.io/bigcat_spinner/" target="_blank" title="BIG CAT Game Spinner">
+    <span class="bi-ic">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="10" cy="10" r="9" stroke="#E85D26" stroke-width="1.5" fill="none"/>
+        <path d="M10 10 L10 2 A8 8 0 0 1 17 14 Z" fill="#E85D26" opacity="0.85"/>
+        <path d="M10 10 L17 14 A8 8 0 0 1 3 14 Z" fill="#3B82C4" opacity="0.85"/>
+        <path d="M10 10 L3 14 A8 8 0 0 1 10 2 Z" fill="#2AA876" opacity="0.85"/>
+        <circle cx="10" cy="10" r="2.5" fill="white" stroke="#ccc" stroke-width="0.5"/>
+        <polygon points="10,1 9.2,3.5 10.8,3.5" fill="#1A1208"/>
+      </svg>
+    </span>
+    <span class="bi-lb">게임룰렛</span>
+  </a>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════
-//  BEETHOVEN 5TH SYMPHONY – TIMPANI BEATMAP
-//  Source: actual timpani part (C & G, Boosey & Hawkes H.& S. 6177)
-//
-//  Two drums:  drum=0 → C (low C),  drum=1 → G (low G)
-//  BPM ≈ 108 (Allegro con brio quarter note)
-//  Time signature: 2/4 for most, some 3/4 / 6/8 sections
-//
-//  This beatmap covers the 1st movement main themes as visible
-//  in the uploaded score pages.
-// ══════════════════════════════════════════════════════════════════
+/* ── DATA ── */
+const DAYS=['일','월','화','수','목','금','토'];
+const COLORS=['#E85D26','#3B82C4','#2AA876','#C4960A','#8B4DB8','#D94F3D','#0891B2','#BE185D'];
+const SYMS=['📚','✏️','🎵','🎮','🎯','🌟','🏆','💡','🎨','📝','🎤','🌈','🦁','🐯','🐧','🌸','⚡','🔔'];
+const SL={ready:'준비중',done:'완료',cancel:'취소'};
 
-const BPM = 108;
-const BEAT = 60 / BPM;           // seconds per quarter note
-const H = BEAT * 2;              // half note
-const Q = BEAT;                  // quarter note
-const E = BEAT / 2;              // eighth note
-const S = BEAT / 4;              // sixteenth note
-const D_Q = BEAT * 1.5;         // dotted quarter
+let wons=[], routines=[], lessons={}, memos={};
+let weekOff=0, monIdx=new Date().getMonth(), statMon=new Date().getMonth();
+let histWonId=null, histClassId=null;
+let editKey=null, editWonId=null, editClassId=null;
+let curSt='ready', stepChecks=[], stepNotes=[];
+let prevKey=null, prevWonId=null;
 
-// Helper: generate run of notes at interval
-function run(startT, drum, count, interval){
-  const arr=[];
-  for(let i=0;i<count;i++) arr.push({t:startT+i*interval, drum});
-  return arr;
+/* ── DATE HELPERS ── */
+// getSunday: returns the Sunday that starts the week `off` weeks from current week
+function getSunday(off){
+  const now=new Date();
+  const dow=now.getDay(); // 0=Sun ... 6=Sat
+  const sun=new Date(now);
+  sun.setDate(now.getDate()-dow+off*7); // back to this week's Sunday
+  sun.setHours(0,0,0,0);
+  return sun;
 }
-
-// ── MOVEMENT 1: Allegro con brio ──
-// Opening motive: G G G Eb  (pickup + 3 hits on G then long rest)
-// Main beats visible on score page 1 (uploaded image 6)
-//
-// Bar 1: 2/4  rest (pickup bar = 1 beat)
-// Bars 1-6: famous motive, timpani silent initially
-// Bars ~6-18: rest (18 bars rest shown on score)
-// Bar ~19: p cresc entrance on C then G alternating
-
-let beats = [];
-let t = 0;
-
-// ─── Opening motif (bar 1 pickup) ─────────────────
-// Score shows "2/4", bar 1 = half-bar pickup rest, then:
-// The famous "short short short long" on G first time
-// First timpani entrance is actually after ~20 bars of rest
-
-// Bars 1 (pickup): rest
-t = 0;
-
-// Bar 1 proper (after pickup): Beethoven bars – G G G G  (eighth notes)
-// This is actually silent for timpani in the opening.
-// According to the score page 1, timpani has:
-// "2  [12 rest]  [cresc p]" then the C/G hits
-// We place the first real entrance around bar 14 (≈ 12 bars rest after pickup)
-
-// Section 1: opening orchestral tutti, timpani silent
-// (about 26 beats of rest = ~13 bars of 2/4)
-
-// First entrance: p cresc – gentle C then G
-t = 26 * Q;
-
-// p cresc section: alternating C / G quarter notes rising
-beats.push(...[
-  {t: t,            drum:0},  // C
-  {t: t + Q,        drum:1},  // G
-  {t: t + 2*Q,      drum:0},  // C
-  {t: t + 3*Q,      drum:1},  // G
-  {t: t + 4*Q,      drum:0},  // C
-  {t: t + 5*Q,      drum:1},  // G
-]);
-t += 8*Q;
-
-// Section ①: ff crash
-// Score shows circled 1 = rehearsal mark 1
-// Short-short-short-long pattern on C and G
-// "dun dun dun DUUUN" in timpani
-beats.push(...[
-  {t: t,        drum:0},  // C 8th
-  {t: t+E,      drum:0},  // C 8th
-  {t: t+E+E,    drum:1},  // G quarter
-  {t: t+E+E+Q,  drum:0},  // C 8th
-  {t: t+E+E+Q+E,drum:0},  // C 8th
-  {t: t+E+E+Q+2*E, drum:1}, // G quarter
-]);
-t += 6*Q;
-
-// G eighth run (ff)
-beats.push(...run(t, 1, 8, E));
-t += 8*E;
-beats.push(...run(t, 0, 4, E));
-t += 4*E;
-beats.push(...run(t, 1, 4, E));
-t += 6*Q;
-
-// Motive repeats: C–G–C–G quarter pairs (f)
-for(let rep=0; rep<4; rep++){
-  beats.push({t:t, drum:0}, {t:t+Q, drum:1});
-  t += Q*4;
-}
-
-// 41 bar rest marker on score
-t += 41*Q*0.5; // compressed for gameplay
-
-// Section ② Rehearsal 2 – f section
-beats.push(...[
-  {t:t,      drum:0},
-  {t:t+E,    drum:0},
-  {t:t+2*E,  drum:1},
-  {t:t+3*E,  drum:0},
-  {t:t+4*E,  drum:0},
-  {t:t+5*E,  drum:1},
-]);
-t += 4*Q;
-beats.push(...run(t, 1, 6, E));
-t += 4*Q;
-
-// piú f section: alternating C/G eighth notes
-beats.push(...[
-  {t:t, drum:0},{t:t+E, drum:1},
-  {t:t+2*E, drum:0},{t:t+3*E, drum:1},
-  {t:t+4*E, drum:0},{t:t+5*E, drum:1},
-  {t:t+6*E, drum:0},{t:t+7*E, drum:1},
-]);
-t += 6*Q;
-
-// 32 bar rest then Rehearsal 3
-t += 32*Q*0.4;
-
-// Section ③ Rehearsal 3 – ff trills
-// Score shows trill marks (tr~~~) on whole notes
-// These become rapid 16th note bursts in game
-beats.push(...run(t, 0, 16, S));  // C trill
-t += 2*Q;
-beats.push(...run(t, 1, 16, S));  // G trill
-t += 2*Q;
-
-// Mix C and G
-beats.push({t:t,drum:0},{t:t+E,drum:1},{t:t+Q,drum:0},{t:t+Q+E,drum:1});
-t += 2*Q;
-beats.push(...run(t, 0, 6, E));
-t += 4*Q;
-
-// Section ④ Rehearsal 4 – ff (score page 1 bottom)
-// Long eighth note pattern visible: 十 十 十 十 etc.
-beats.push(...run(t, 1, 12, E));
-t += 6*Q;
-beats.push(...run(t, 0, 8, E));
-t += 4*Q;
-
-// C and G interleaved
-for(let i=0;i<8;i++){
-  beats.push({t:t+i*E, drum: i%2===0 ? 0 : 1});
-}
-t += 6*Q;
-
-// Solo passages (score shows "Solo.")
-// Soft C–G–C quarter notes
-beats.push(
-  {t:t, drum:0},
-  {t:t+Q, drum:1},
-  {t:t+2*Q, drum:0},
-  {t:t+3*Q, drum:1}
-);
-t += 6*Q;
-
-// Second solo passage
-beats.push(
-  {t:t, drum:1},
-  {t:t+Q, drum:0},
-  {t:t+2*Q, drum:1},
-  {t:t+3*Q, drum:0}
-);
-t += 8*Q;
-
-// ─── MOVEMENT 2 indicator on score page 2 ─────────
-// (labelled "2" at top right of score page 1)
-// Series of eighth pairs
-beats.push(...[
-  {t:t,drum:0},{t:t+E,drum:0},
-  {t:t+Q,drum:1},{t:t+Q+E,drum:1},
-  {t:t+2*Q,drum:0},{t:t+2*Q+E,drum:0},
-  {t:t+3*Q,drum:1},{t:t+3*Q+E,drum:1},
-]);
-t += 6*Q;
-
-// Sempre più Allegro section (page 1, line 3)
-// Fast repeated notes on C and G alternating
-beats.push(...run(t, 0, 4, E));
-t += 2*Q;
-beats.push(...run(t, 1, 4, E));
-t += 2*Q;
-beats.push(...run(t, 0, 2, Q));
-t += 2*Q;
-beats.push(...run(t, 1, 2, Q));
-t += 2*Q;
-
-// Presto section! Very fast
-beats.push(...run(t, 0, 8, E*0.7));
-t += 4*Q;
-beats.push(...run(t, 1, 8, E*0.7));
-t += 4*Q;
-beats.push(...run(t, 0, 4, E*0.7));
-beats.push(...run(t, 0, 4, E*0.7).map(n=>({...n, t:n.t+2*Q, drum:1})));
-t += 4*Q;
-
-// f sections (page 1 lines 4-5): repeating pattern of pairs
-for(let rep=0;rep<6;rep++){
-  beats.push({t:t, drum:0},{t:t+E, drum:1});
-  t += Q + (rep%2===1 ? Q : 0);
-}
-t += 2*Q;
-
-// ff long section (line 6, page 1)
-beats.push(...run(t, 0, 16, E));
-t += 8*Q;
-beats.push(...run(t, 1, 16, E));
-t += 8*Q;
-
-// Interleaved run
-for(let i=0;i<16;i++){
-  beats.push({t:t+i*E, drum: i%2===0 ? 0 : 1});
-}
-t += 8*Q;
-
-// sempre ff (page 1 line 8 – trill notation)
-beats.push(...run(t, 0, 24, S));  // C trill
-t += 3*Q;
-beats.push(...run(t, 1, 24, S));  // G trill  
-t += 3*Q;
-
-// Long held notes then resumption
-beats.push({t:t, drum:0});
-t += 2*Q;
-beats.push({t:t, drum:1});
-t += 2*Q;
-beats.push(...run(t, 0, 6, E));
-t += 4*Q;
-beats.push(...run(t, 1, 6, E));
-t += 4*Q;
-
-// Runs of quarter pairs to finish
-for(let rep=0;rep<10;rep++){
-  beats.push({t:t, drum: rep%2===0 ? 0 : 1});
-  t += Q;
-}
-t += 4*Q;
-
-// Page 2 material (lines 9-11) – closing runs
-beats.push(...run(t, 0, 12, E));
-t += 6*Q;
-beats.push(...run(t, 1, 12, E));
-t += 6*Q;
-
-// Fast alternating
-for(let i=0;i<20;i++){
-  beats.push({t:t+i*E, drum: i%3===0 ? 0 : 1});
-}
-t += 12*Q;
-
-// Final page cadence
-beats.push(
-  {t:t, drum:0},{t:t+E, drum:0},
-  {t:t+Q, drum:1},{t:t+Q+E, drum:1},
-  {t:t+2*Q, drum:0},{t:t+2*Q+E, drum:1},
-  {t:t+3*Q, drum:0},
-  {t:t+4*Q, drum:1},
-  {t:t+5*Q, drum:0},
-  {t:t+6*Q, drum:0},
-  {t:t+7*Q, drum:1},
-);
-t += 10*Q;
-
-const TOTAL_DURATION = t + 2;
-
-// Sort by time
-beats.sort((a,b)=>a.t-b.t);
-
-// ══════════════════════════════════════════════════════════════════
-//  CANVAS SETUP
-// ══════════════════════════════════════════════════════════════════
-const CW = 960;
-const DRUM_ROWS = [
-  { label:'C (low C)', color:'#c0392b', colorL:'#e74c3c', colorHex:'#c0392b' },
-  { label:'G (low G)', color:'#1a5276', colorL:'#2980b9', colorHex:'#1a5276' },
-];
-
-const MARGIN_LEFT = 88;
-const ROW_H       = 80;
-const STAFF_OFF_Y = 40;  // staff line y within row
-const CANVAS_H    = 20 + DRUM_ROWS.length * ROW_H + 10;
-const CURSOR_X    = 240;
-const SCROLL_SPD  = 200; // px/sec
-
-const staffCanvas = document.getElementById('staff-canvas');
-staffCanvas.height = CANVAS_H;
-staffCanvas.style.height = CANVAS_H + 'px';
-document.getElementById('score-panel').style.height = CANVAS_H + 'px';
-
-const cw = document.getElementById('cursor-wrap');
-cw.style.cssText = `position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:10;`;
-const cursorLine = document.getElementById('cursor-line');
-cursorLine.style.left = CURSOR_X + 'px';
-cursorLine.style.height = CANVAS_H + 'px';
-const cursorGlow = document.getElementById('cursor-glow');
-cursorGlow.style.left = (CURSOR_X-14) + 'px';
-cursorGlow.style.height = CANVAS_H + 'px';
-
-const ctx = staffCanvas.getContext('2d');
-
-function rowY(i){ return 20 + i * ROW_H + STAFF_OFF_Y; }
-
-function drawStaticBg(){
-  ctx.clearRect(0,0,CW,CANVAS_H);
-  // Paper
-  ctx.fillStyle = '#f2edd8';
-  ctx.fillRect(0,0,CW,CANVAS_H);
-  // Subtle warm gradient
-  const grad = ctx.createLinearGradient(0,0,0,CANVAS_H);
-  grad.addColorStop(0,'rgba(200,160,60,.04)');
-  grad.addColorStop(1,'rgba(120,80,20,.06)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,CW,CANVAS_H);
-
-  // Left label zone
-  ctx.fillStyle = 'rgba(180,140,50,.07)';
-  ctx.fillRect(0,0,MARGIN_LEFT,CANVAS_H);
-
-  // Border lines
-  ctx.fillStyle = '#8a6010';
-  ctx.fillRect(0,0,CW,2);
-  ctx.fillRect(0,CANVAS_H-2,CW,2);
-
-  DRUM_ROWS.forEach((row, i)=>{
-    const sy = rowY(i);
-
-    // Row tint
-    ctx.fillStyle = row.color + '0a';
-    ctx.fillRect(MARGIN_LEFT, sy - ROW_H/2+4, CW - MARGIN_LEFT, ROW_H-8);
-
-    // Row separator
-    if(i>0){
-      ctx.strokeStyle='rgba(100,70,10,.15)';
-      ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(4,sy-ROW_H/2+4);ctx.lineTo(CW-4,sy-ROW_H/2+4);ctx.stroke();
-    }
-
-    // Staff line (single line percussion staff)
-    ctx.strokeStyle = '#2a1a04';
-    ctx.lineWidth = 1.8;
-    ctx.beginPath();
-    ctx.moveTo(MARGIN_LEFT, sy);
-    ctx.lineTo(CW-4, sy);
-    ctx.stroke();
-
-    // Percussion clef (two rects)
-    const cx = MARGIN_LEFT - 22;
-    ctx.fillStyle = row.color;
-    ctx.fillRect(cx-5, sy-14, 5, 28);
-    ctx.fillRect(cx+2, sy-14, 5, 28);
-
-    // Label
-    ctx.font = 'bold 10px "Crimson Pro", serif';
-    ctx.fillStyle = row.color;
-    ctx.textAlign = 'right';
-    ctx.fillText(row.label, MARGIN_LEFT - 12, sy + 4);
-
-    // Drum indicator circle
-    ctx.beginPath();
-    ctx.arc(MARGIN_LEFT - 44, sy, 8, 0, Math.PI*2);
-    ctx.fillStyle = row.color;
-    ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=1;ctx.stroke();
-  });
-
-  // Bar lines every ~96px
-  ctx.strokeStyle='rgba(60,40,10,.25)';
-  ctx.lineWidth=1;
-  const topY = rowY(0) - ROW_H/2 + 8;
-  const botY = rowY(DRUM_ROWS.length-1) + ROW_H/2 - 8;
-  for(let bx = MARGIN_LEFT + 96; bx < CW-10; bx+=96){
-    ctx.beginPath();ctx.moveTo(bx,topY);ctx.lineTo(bx,botY);ctx.stroke();
-  }
-
-  // Cursor zone
-  ctx.fillStyle='rgba(180,50,10,.05)';
-  ctx.fillRect(CURSOR_X-20,0,40,CANVAS_H);
-
-  // Labels C / G near cursor
-  DRUM_ROWS.forEach((row,i)=>{
-    const sy=rowY(i);
-    ctx.font='bold 9px "Jua",sans-serif';
-    ctx.fillStyle=row.color+'aa';
-    ctx.textAlign='center';
-    ctx.fillText(['F','J'][i], CURSOR_X, sy+25);
-  });
-
-  ctx.textAlign='left';
-}
-
-// ── Note rendering ──
-let scrollNotes = [];
-let hitFlashes = [];
-
-function drawFrame(){
-  drawStaticBg();
-
-  // Approaching glow behind cursor
-  scrollNotes.forEach(n=>{
-    if(n.hit||n.missed) return;
-    const sx = rowY(n.drum);
-    const dist = Math.abs(n.x - CURSOR_X);
-    if(dist < 70){
-      const a = (1-dist/70)*0.5;
-      const row=DRUM_ROWS[n.drum];
-      ctx.beginPath();
-      ctx.arc(n.x, sx, 26, 0, Math.PI*2);
-      ctx.fillStyle = row.colorL + Math.floor(a*255).toString(16).padStart(2,'0');
-      ctx.fill();
-    }
-  });
-
-  // Draw notes
-  scrollNotes.forEach(n=>{
-    if(n.hit) return;
-    if(n.missed){
-      if(!n.missA) n.missA=0.5;
-      n.missA -= 0.04;
-      if(n.missA<=0) return;
-      const sy=rowY(n.drum);
-      ctx.save();ctx.globalAlpha=n.missA;
-      ctx.translate(n.x,sy);ctx.rotate(-0.2);
-      ctx.beginPath();ctx.ellipse(0,0,12,9,0,0,Math.PI*2);
-      ctx.fillStyle='#aaa';ctx.fill();
-      ctx.restore();
-      return;
-    }
-    const sy = rowY(n.drum);
-    const row = DRUM_ROWS[n.drum];
-
-    ctx.save();
-    ctx.shadowColor = row.colorL;
-    ctx.shadowBlur = 9;
-
-    // Notehead
-    ctx.save();
-    ctx.translate(n.x, sy);
-    ctx.rotate(-0.2);
-    ctx.beginPath();
-    ctx.ellipse(0,0,12,9,0,0,Math.PI*2);
-    ctx.fillStyle = row.color;
-    ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1;ctx.stroke();
-    // Shine
-    ctx.beginPath();ctx.ellipse(-3,-3,4.5,3.2,-0.3,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,.4)';ctx.fill();
-    ctx.restore();
-
-    // Stem
-    ctx.strokeStyle=row.color;ctx.lineWidth=2.2;
-    ctx.beginPath();ctx.moveTo(n.x+11,sy-2);ctx.lineTo(n.x+11,sy-30);ctx.stroke();
-
-    // Flag
-    ctx.beginPath();
-    ctx.moveTo(n.x+11,sy-30);
-    ctx.bezierCurveTo(n.x+30,sy-22,n.x+26,sy-10,n.x+20,sy-8);
-    ctx.lineWidth=2.2;ctx.strokeStyle=row.color;ctx.stroke();
-
-    // Key badge
-    ctx.beginPath();ctx.arc(n.x,sy+20,9,0,Math.PI*2);
-    ctx.fillStyle=row.color;ctx.fill();
-    ctx.font='bold 10px "Jua"';ctx.fillStyle='white';ctx.textAlign='center';
-    ctx.fillText(['F','J'][n.drum], n.x, sy+24);
-    ctx.textAlign='left';
-
-    ctx.restore();
-  });
-
-  // Hit flashes on cursor
-  hitFlashes.forEach(f=>{
-    f.alpha -= 0.09;
-    if(f.alpha<=0) return;
-    const sy=rowY(f.drum);
-    ctx.save();
-    ctx.globalAlpha=f.alpha;
-    ctx.beginPath();
-    ctx.arc(CURSOR_X,sy,28+(1-f.alpha)*15,0,Math.PI*2);
-    ctx.fillStyle=DRUM_ROWS[f.drum].colorL;
-    ctx.fill();
-    ctx.restore();
-  });
-  hitFlashes=hitFlashes.filter(f=>f.alpha>0);
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  SPLASH CANVAS
-// ══════════════════════════════════════════════════════════════════
-const splashCanvas=document.getElementById('splash-canvas');
-const sc=splashCanvas.getContext('2d');
-let splashP=[];
-const DRUM_STAGE_X=[280, 580]; // stage x positions for C and G drums
-
-function triggerSplash(drum){
-  const cx=DRUM_STAGE_X[drum], cy=38;
-  const hex=DRUM_ROWS[drum].colorHex;
-  for(let r=0;r<3;r++) splashP.push({type:'ring',cx,cy,radius:8,maxR:110+r*35,alpha:.9,color:hex,speed:4.5+r*1.5,delay:r*50});
-  splashP.push({type:'flash',cx,cy,radius:0,maxR:80,alpha:.8,color:hex,speed:7});
-  for(let i=0;i<32;i++){
-    const a=Math.random()*Math.PI*2,spd=2.5+Math.random()*7.5;
-    splashP.push({type:'drop',x:cx+(Math.random()-.5)*20,y:cy+(Math.random()-.5)*7,
-      vx:Math.cos(a)*spd,vy:Math.sin(a)*spd-2.5,gravity:.30,size:2+Math.random()*6.5,alpha:1,color:hex,tail:[]});
-  }
-  for(let i=0;i<14;i++){
-    const sp=Math.PI+(i/14)*Math.PI,spd=4+Math.random()*5.5;
-    splashP.push({type:'drop',x:cx+(Math.random()-.5)*14,y:cy,
-      vx:Math.cos(sp)*spd*.65,vy:-spd,gravity:.33,size:3+Math.random()*5,alpha:1,color:hex,tail:[]});
-  }
-}
-
-function drawSplash(){
-  sc.clearRect(0,0,960,200);
-  splashP=splashP.filter(p=>{
-    if(p.delay>0){p.delay-=16;return true;}
-    if(p.type==='ring'){
-      p.radius+=p.speed;p.alpha-=.03;
-      if(p.alpha<=0||p.radius>=p.maxR) return false;
-      sc.beginPath();sc.ellipse(p.cx,p.cy,p.radius,p.radius*.38,0,0,Math.PI*2);
-      sc.strokeStyle=p.color+Math.floor(p.alpha*255).toString(16).padStart(2,'0');
-      sc.lineWidth=2.5;sc.stroke();return true;
-    }
-    if(p.type==='flash'){
-      p.radius+=p.speed;p.alpha-=.1;
-      if(p.alpha<=0||p.radius>=p.maxR) return false;
-      const g=sc.createRadialGradient(p.cx,p.cy,0,p.cx,p.cy,p.radius);
-      g.addColorStop(0,p.color+Math.floor(p.alpha*255).toString(16).padStart(2,'0'));
-      g.addColorStop(1,'transparent');
-      sc.beginPath();sc.ellipse(p.cx,p.cy,p.radius,p.radius*.42,0,0,Math.PI*2);
-      sc.fillStyle=g;sc.fill();return true;
-    }
-    if(p.type==='drop'){
-      p.tail.push({x:p.x,y:p.y});if(p.tail.length>5)p.tail.shift();
-      p.vy+=p.gravity;p.x+=p.vx;p.y+=p.vy;p.vx*=.97;p.alpha-=.022;
-      if(p.alpha<=0||p.y>210) return false;
-      if(p.tail.length>1){
-        sc.beginPath();sc.moveTo(p.tail[0].x,p.tail[0].y);
-        p.tail.forEach(pt=>sc.lineTo(pt.x,pt.y));
-        sc.strokeStyle=p.color+Math.floor(p.alpha*.45*255).toString(16).padStart(2,'0');
-        sc.lineWidth=p.size*.45;sc.lineCap='round';sc.stroke();
-      }
-      sc.save();sc.translate(p.x,p.y);sc.rotate(Math.atan2(p.vy,p.vx)+Math.PI/2);
-      sc.scale(1,1.55);sc.beginPath();sc.arc(0,0,p.size/2,0,Math.PI*2);sc.restore();
-      sc.fillStyle=p.color+Math.floor(p.alpha*255).toString(16).padStart(2,'0');sc.fill();
-      sc.beginPath();sc.arc(p.x-p.size*.22,p.y-p.size*.22,p.size*.2,0,Math.PI*2);
-      sc.fillStyle=`rgba(255,255,255,${p.alpha*.55})`;sc.fill();
-      return true;
-    }
-    return false;
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  AUDIO – Realistic Timpani + Orchestra BG
-// ══════════════════════════════════════════════════════════════════
-let audioCtx=null, bgOscs=[];
-
-function initAudio(){
-  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended') audioCtx.resume();
-}
-
-function playTimpaniHit(drum){
-  if(!audioCtx) return;
-  const now=audioCtx.currentTime;
-  // C drum ≈ 65 Hz fundamental, G drum ≈ 98 Hz
-  const f0 = drum===0 ? 65.4 : 98.0;
-
-  const master=audioCtx.createGain();master.gain.value=.95;master.connect(audioCtx.destination);
-  const rev=audioCtx.createDelay(.12);rev.delayTime.value=.08;
-  const revG=audioCtx.createGain();revG.gain.value=.35;rev.connect(revG);revG.connect(master);
-
-  // Membrane modes (inharmonic series of timpani)
-  const modes=[1.0,1.504,1.742,2.0,2.245,2.659];
-  const vols=[1.0,.55,.38,.22,.13,.07];
-  const decs=[2.2,1.4,1.0,.75,.5,.35];
-  modes.forEach((m,i)=>{
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    const f=audioCtx.createBiquadFilter();f.type='bandpass';f.frequency.value=f0*m;f.Q.value=10;
-    o.type='sine';o.frequency.value=f0*m;
-    o.connect(f);f.connect(g);g.connect(master);f.connect(rev);
-    g.gain.setValueAtTime(vols[i]*.7,now);
-    g.gain.exponentialRampToValueAtTime(.001,now+decs[i]);
-    o.start(now);o.stop(now+decs[i]+.05);
-  });
-
-  // Attack noise burst
-  const bLen=Math.floor(audioCtx.sampleRate*.06);
-  const buf=audioCtx.createBuffer(1,bLen,audioCtx.sampleRate);
-  const bd=buf.getChannelData(0);
-  for(let i=0;i<bLen;i++) bd[i]=(Math.random()*2-1);
-  const ns=audioCtx.createBufferSource();ns.buffer=buf;
-  const nf=audioCtx.createBiquadFilter();nf.type='bandpass';nf.frequency.value=f0*3;nf.Q.value=.8;
-  const ng=audioCtx.createGain();ng.gain.setValueAtTime(1.0,now);ng.gain.exponentialRampToValueAtTime(.001,now+.055);
-  ns.connect(nf);nf.connect(ng);ng.connect(master);ns.start(now);ns.stop(now+.065);
-
-  // Body thud
-  const to=audioCtx.createOscillator(),tg=audioCtx.createGain();
-  to.type='sine';to.frequency.setValueAtTime(f0*.48,now);to.frequency.exponentialRampToValueAtTime(f0*.22,now+.2);
-  tg.gain.setValueAtTime(.8,now);tg.gain.exponentialRampToValueAtTime(.001,now+.25);
-  to.connect(tg);tg.connect(master);to.start(now);to.stop(now+.28);
-
-  // Membrane ring-down
-  const mo=audioCtx.createOscillator(),mg=audioCtx.createGain();
-  mo.type='triangle';mo.frequency.setValueAtTime(f0*1.42,now);mo.frequency.exponentialRampToValueAtTime(f0*1.1,now+.1);
-  mg.gain.setValueAtTime(.55,now);mg.gain.exponentialRampToValueAtTime(.001,now+1.4);
-  mo.connect(mg);mg.connect(master);mg.connect(rev);mo.start(now);mo.stop(now+1.45);
-}
-
-// ── Background orchestra (full Beethoven 5th strings+winds) ──
-// We synthesize the famous opening motif and main themes
-function startOrchBg(){
-  if(!audioCtx) return;
-  bgOscs.forEach(o=>{try{o.stop();}catch(e){}});bgOscs=[];
-
-  const now=audioCtx.currentTime;
-  const mg=audioCtx.createGain();mg.gain.value=0.07;mg.connect(audioCtx.destination);
-  const dl=audioCtx.createDelay(.4);dl.delayTime.value=.22;
-  const dg=audioCtx.createGain();dg.gain.value=.3;dl.connect(dg);dg.connect(mg);
-
-  // Famous motive: Eb-Eb-Eb-C (short short short LONG)
-  // Violin section simulacrum using sawtooth + filter
-  const motive=[
-    [311.1,.3,1],  // Eb4 short
-    [311.1,.3,1],
-    [311.1,.3,1],
-    [196.0,1.8,.9], // G3 long (actually Eb goes to C but we do G for drama)
-    [0,.4,0],
-    [277.2,.3,1],  // Eb4 second time
-    [277.2,.3,1],
-    [277.2,.3,1],
-    [174.6,2.0,.9], // F3 long
-    [0,.4,0],
-    // Development material
-    [261.6,.5,.8],[293.7,.5,.8],[329.6,.5,.8],[349.2,.5,.8],
-    [392.0,1.0,1],[0,.3,0],
-    [523.3,.25,.7],[493.9,.25,.7],[466.2,.25,.7],[440.0,.25,.7],
-    [415.3,1.5,.9],[0,.5,0],
-    // Main theme continuation
-    [329.6,.3,.8],[329.6,.3,.8],[329.6,.3,.8],[261.6,1.5,.9],[0,.3,0],
-    [293.7,.3,.8],[293.7,.3,.8],[293.7,.3,.8],[220.0,1.5,.9],[0,.5,0],
-    // Bridge
-    [392.0,.5,.9],[349.2,.5,.9],[329.6,.5,.9],[293.7,.5,.9],
-    [261.6,2.0,1],[0,.5,0],
-    [196.0,.25,.7],[220.0,.25,.7],[246.9,.25,.7],[261.6,.25,.7],
-    [293.7,.5,.8],[329.6,.5,.8],[349.2,.5,.8],[392.0,.5,.8],
-    [440.0,1.5,1],[0,.8,0],
+function dk(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function todayDk(){return dk(new Date());}
+
+/* ── LESSON KEY ── includes classId ── */
+// key format: YYYY-MM-DD_wonId_classId
+function lkey(dateStr,wonId,classId){return `${dateStr}_${wonId}_${classId}`;}
+function parseLkey(k){const p=k.split('_');return{date:p[0],wonId:parseInt(p[1]),classId:parseInt(p[2])};}
+
+/* ── DEFAULTS ── */
+function initDefaults(){
+  wons=[
+    {id:1,name:'햇살어린이집',days:[1,3],color:COLORS[0],
+     classes:[{id:11,age:'6세',time:'10:00'},{id:12,age:'5세',time:'11:00'}]},
+    {id:2,name:'별빛유치원',days:[2,4],color:COLORS[1],
+     classes:[{id:21,age:'7세',time:'13:00'}]},
   ];
+  routines=[{id:1,name:'기본 루틴',steps:['Greeting & Warm-up','Song / Chant','Story & Target Language','Activity / Game','Review & Goodbye']}];
+  renderSetup();
+}
 
-  const beatSec = 60/108;
-  let t=now+0.3;
-  const loopDur=motive.reduce((s,n)=>s+n[1],0)*beatSec;
+/* ── SETUP ── */
+function renderSetup(){
+  document.getElementById('won-list').innerHTML=wons.map((w,wi)=>`
+    <div class="won-card">
+      <div class="won-header" style="border-bottom:1px solid ${w.color}30;">
+        <div class="won-dot" style="background:${w.color}"></div>
+        <input class="won-title-input" value="${w.name}" onchange="wons[${wi}].name=this.value" placeholder="원명" />
+        <button class="btn-del" onclick="wons.splice(${wi},1);renderSetup()">×</button>
+      </div>
+      <div class="won-body">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">방문 요일</div>
+        <div class="dpills" style="margin-bottom:10px;">
+          ${DAYS.map((d,di)=>`<button class="dp${w.days.includes(di)?' on':''}" data-d="${di}" onclick="toggleDay(${wi},${di})">${d}</button>`).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:5px;">색상</div>
+        <div class="cdots" style="margin-bottom:10px;">
+          ${COLORS.map(c=>`<div class="cdot${w.color===c?' on':''}" style="background:${c}" onclick="wons[${wi}].color='${c}';renderSetup()"></div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">반 / 연령 · 시간</div>
+        <div class="class-list">
+          ${(w.classes||[]).map((cl,ci)=>`
+            <div class="class-row">
+              <span class="class-badge" style="background:${w.color}20;color:${w.color}">${cl.age||'연령'}</span>
+              <input class="class-input" value="${cl.age}" placeholder="예) 7세" onchange="wons[${wi}].classes[${ci}].age=this.value;renderSetup()" style="max-width:60px;" />
+              <input class="class-input" value="${cl.time}" placeholder="10:00" onchange="wons[${wi}].classes[${ci}].time=this.value" style="max-width:60px;" />
+              <button class="btn-del" style="width:22px;height:22px;font-size:13px;" onclick="wons[${wi}].classes.splice(${ci},1);renderSetup()">×</button>
+            </div>`).join('')}
+        </div>
+        <button style="border:none;background:transparent;font-size:12px;color:var(--muted);cursor:pointer;margin-top:6px;padding:2px 0;" onclick="addClassToWon(${wi})">＋ 반 추가</button>
+      </div>
+    </div>`).join('');
 
-  for(let rep=0;rep<8;rep++){
-    let tt=t+rep*loopDur;
-    motive.forEach(n=>{
-      const [freq,dur,vol]=n;const d=dur*beatSec;
-      if(freq===0){tt+=d;return;}
-      // Strings layer (sawtooth)
-      const o=audioCtx.createOscillator(),g=audioCtx.createGain(),fi=audioCtx.createBiquadFilter();
-      fi.type='lowpass';fi.frequency.value=700;o.type='sawtooth';o.frequency.value=freq;
-      // Vibrato
-      const vl=audioCtx.createOscillator(),vg=audioCtx.createGain();
-      vl.frequency.value=5.5;vg.gain.value=2.5;vl.connect(vg);vg.connect(o.frequency);
-      o.connect(fi);fi.connect(g);g.connect(mg);fi.connect(dl);
-      g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(vol*.9,tt+.03);
-      g.gain.setValueAtTime(vol*.9,tt+d*.8);g.gain.linearRampToValueAtTime(0,tt+d);
-      o.start(tt);o.stop(tt+d+.04);vl.start(tt);vl.stop(tt+d+.04);
-      bgOscs.push(o,vl);
-      // Wind/horn layer (square, lower octave)
-      const o2=audioCtx.createOscillator(),g2=audioCtx.createGain(),fi2=audioCtx.createBiquadFilter();
-      fi2.type='lowpass';fi2.frequency.value=500;o2.type='square';o2.frequency.value=freq/2;
-      o2.connect(fi2);fi2.connect(g2);g2.connect(mg);
-      g2.gain.setValueAtTime(0,tt);g2.gain.linearRampToValueAtTime(vol*.3,tt+.06);
-      g2.gain.setValueAtTime(vol*.3,tt+d*.7);g2.gain.linearRampToValueAtTime(0,tt+d);
-      o2.start(tt);o2.stop(tt+d+.04);bgOscs.push(o2);
-      tt+=d;
+  document.getElementById('routine-list').innerHTML=routines.map((r,ri)=>`
+    <div class="card" style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:15px;">📋</span>
+        <input class="inline-input" value="${r.name}" onchange="routines[${ri}].name=this.value" style="flex:1;font-size:14px;font-weight:500;" />
+        <button class="btn-del" onclick="routines.splice(${ri},1);renderSetup()">×</button>
+      </div>
+      ${r.steps.map((s,si)=>`
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <div style="width:19px;height:19px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${si+1}</div>
+          <input class="inline-input" value="${s}" onchange="routines[${ri}].steps[${si}]=this.value" style="flex:1;font-size:13px;" />
+          <button class="btn-del" style="width:20px;height:20px;font-size:12px;" onclick="routines[${ri}].steps.splice(${si},1);renderSetup()">×</button>
+        </div>`).join('')}
+      <button style="border:none;background:transparent;font-size:12px;color:var(--muted);cursor:pointer;padding:2px 0;margin-top:2px;" onclick="routines[${ri}].steps.push('새 단계');renderSetup()">＋ 단계 추가</button>
+    </div>`).join('');
+}
+
+function toggleDay(wi,di){const i=wons[wi].days.indexOf(di);i===-1?wons[wi].days.push(di):wons[wi].days.splice(i,1);renderSetup();}
+function addWon(){wons.push({id:Date.now(),name:'',days:[],color:COLORS[wons.length%COLORS.length],classes:[{id:Date.now()+1,age:'',time:''}]});renderSetup();}
+function addClassToWon(wi){wons[wi].classes.push({id:Date.now(),age:'',time:''});renderSetup();}
+function addRoutine(){routines.push({id:Date.now(),name:'새 루틴',steps:['Greeting','Activity','Review']});renderSetup();}
+function saveAll(){renderWeekly();renderMonthly();renderStats();renderHistPage();nav('weekly');}
+
+/* ── WEEKLY ── */
+function renderWeekly(){
+  const sun=getSunday(weekOff);
+  // build 7 days starting from Sunday
+  const days=Array.from({length:7},(_,i)=>{const d=new Date(sun);d.setDate(sun.getDate()+i);return d;});
+  document.getElementById('wtitle').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} — ${days[6].getMonth()+1}/${days[6].getDate()}`;
+
+  const strip=document.getElementById('wstrip');
+  strip.innerHTML=days.map((d)=>{
+    const dow=d.getDay(); // 0=Sun,1=Mon,...,6=Sat
+    const hdCls=dow===0?'sun':dow===6?'sat':'';
+    const key=dk(d);
+    const isToday=key===todayDk();
+    // get all classes for this day
+    const chips=[];
+    wons.filter(w=>w.days.includes(dow)).forEach(w=>{
+      (w.classes||[]).forEach(cl=>{
+        const k=lkey(key,w.id,cl.id);
+        const l=lessons[k]||{};
+        const stDot=l.status==='done'?'🟢':l.status==='cancel'?'🔴':'';
+        chips.push(`<div class="lchip" style="border-left-color:${w.color};background:${w.color}18;"
+          data-lk="${k}" data-wid="${w.id}" data-cid="${cl.id}"
+          ontouchstart="startPress(this,'${k}','${w.id}','${cl.id}')"
+          ontouchend="endPress()"
+          ontouchmove="cancelPress()"
+          onclick="handleTap(event,'${k}','${w.id}','${cl.id}')">
+          <div class="lchip-name">${l.icon||'📚'} ${w.name}${stDot}</div>
+          <div class="lchip-meta">${cl.age} · ${cl.time}</div>
+          ${l.topic?`<div style="font-size:8px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.topic}</div>`:''}
+        </div>`);
+      });
+    });
+    return `<div class="wday${isToday?' today':''}">
+      <div class="wday-hd ${hdCls}">
+        <div>${DAYS[dow]}</div>
+        <div class="wday-date">${d.getMonth()+1}/${d.getDate()}</div>
+      </div>
+      <div class="wday-body">
+        ${chips.join('')}
+        <div class="wday-plus" onclick="openDetailNew('${key}')">+</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── MONTHLY ── */
+function renderMonthly(){
+  const year=2026, m=monIdx;
+  document.getElementById('mtitle').textContent=`${m+1}월`;
+  const first=new Date(year,m,1);
+  const lastDate=new Date(year,m+1,0).getDate();
+  const startDow=first.getDay(); // day of week of 1st (0=Sun)
+  const cells=[];
+  // fill leading empty cells
+  for(let i=0;i<startDow;i++){const d=new Date(year,m,1-startDow+i);cells.push({d,other:true});}
+  for(let d=1;d<=lastDate;d++)cells.push({d:new Date(year,m,d),other:false});
+  while(cells.length%7!==0){const prev=cells[cells.length-1].d;const nd=new Date(prev);nd.setDate(prev.getDate()+1);cells.push({d:nd,other:true});}
+
+  const ts=todayDk();
+  document.getElementById('mgrid').innerHTML=cells.map(({d,other})=>{
+    const dow=d.getDay(),key=dk(d),isT=key===ts;
+    const dayChips=[];
+    if(!other){
+      wons.filter(w=>w.days.includes(dow)).forEach(w=>{
+        (w.classes||[]).forEach(cl=>{
+          const k=lkey(key,w.id,cl.id);
+          const l=lessons[k]||{};
+          dayChips.push(`<div class="mchip" style="border-left-color:${w.color};background:${w.color}18;"
+            data-lk="${k}"
+            ontouchstart="startPress(this,'${k}','${w.id}','${cl.id}')"
+            ontouchend="endPress()"
+            ontouchmove="cancelPress()"
+            onclick="handleTap(event,'${k}','${w.id}','${cl.id}')">${l.icon||'📚'} ${w.name}</div>`);
+        });
+      });
+    }
+    return `<div class="mcell${other?' other':''}${isT?' today':''}">
+      <div class="mdate${dow===0?' sun':dow===6?' sat':''}">${d.getDate()}</div>
+      ${dayChips.join('')}
+    </div>`;
+  }).join('');
+}
+function prevMon(){if(monIdx>0){monIdx--;renderMonthly();}}
+function nextMon(){if(monIdx<11){monIdx++;renderMonthly();}}
+
+/* ── LONG PRESS ── */
+let pressTimer=null, pressTarget=null;
+function startPress(el,k,wid,cid){
+  pressTarget={k,wid,cid};
+  pressTimer=setTimeout(()=>{openPreview(k,wid,cid);pressTimer=null;},500);
+}
+function endPress(){if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}}
+function cancelPress(){if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}}
+function handleTap(e,k,wid,cid){if(pressTimer){clearTimeout(pressTimer);pressTimer=null;openDetail(k,wid,cid);}else if(!document.getElementById('prev-overlay').classList.contains('open')){openDetail(k,wid,cid);}}
+
+/* ── PREVIEW MODAL ── */
+function openPreview(k,wid,cid){
+  prevKey=k;prevWonId=wid;
+  const{date}=parseLkey(k);
+  const w=wons.find(x=>x.id===parseInt(wid));
+  const cl=(w?.classes||[]).find(c=>c.id===parseInt(cid));
+  const l=lessons[k]||{};
+  const d=new Date(date);
+  const r=routines[0];
+  const sc=l.status||'ready';
+
+  let html=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+    <span style="font-size:22px;">${l.icon||'📚'}</span>
+    <div>
+      <div style="font-family:'Black Han Sans',sans-serif;font-size:17px;">${w?w.name:''} <span style="font-size:13px;font-weight:400;">${cl?cl.age:''}</span></div>
+      <div style="font-size:12px;color:var(--muted);">${d.getMonth()+1}월 ${d.getDate()}일 (${DAYS[d.getDay()]}) · ${cl?cl.time:''} <span class="sbadge ${sc}">${SL[sc]}</span></div>
+    </div>
+  </div>`;
+
+  if(l.topic){html+=`<div class="prev-section"><div class="prev-label">수업 주제</div><div class="prev-val">${l.topic}</div></div>`;}
+
+  if(r){
+    html+=`<div class="prev-section"><div class="prev-label">루틴 체크</div>`;
+    r.steps.forEach((s,i)=>{
+      const done=l.checks&&l.checks[i];
+      html+=`<div class="step-preview-row"><div class="step-tick ${done?'done':'undone'}">${done?'✓':''}</div><span style="${done?'text-decoration:line-through;color:var(--muted)':''}">${i+1}. ${s}</span></div>`;
+    });
+    const doneCount=(l.checks||[]).filter(Boolean).length;
+    const pct=r.steps.length?Math.round(doneCount/r.steps.length*100):0;
+    html+=`<div style="margin-top:6px;font-size:11px;color:var(--muted);">완료율 ${pct}% (${doneCount}/${r.steps.length})</div></div>`;
+  }
+
+  if(l.note){html+=`<div class="prev-section"><div class="prev-label">메모</div><div class="prev-val" style="font-size:13px;color:var(--muted);">${l.note}</div></div>`;}
+  if(!l.topic&&!l.note&&!l.checks?.some(Boolean)){html+=`<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0;">아직 기록이 없어요<br>수정하기를 눌러 입력하세요</div>`;}
+
+  document.getElementById('prev-content').innerHTML=html;
+  document.getElementById('prev-overlay').classList.add('open');
+}
+function closePrev(){document.getElementById('prev-overlay').classList.remove('open');}
+function prevToEdit(){
+  const{wid,cid}=parseLkey(prevKey);
+  closePrev();
+  setTimeout(()=>openDetail(prevKey,wid,cid),100);
+}
+
+/* ── DETAIL MODAL ── */
+function openDetail(k,wid,cid){
+  editKey=k;editWonId=parseInt(wid);editClassId=parseInt(cid);
+  const{date}=parseLkey(k);
+  const w=wons.find(x=>x.id===editWonId);
+  const cl=(w?.classes||[]).find(c=>c.id===editClassId);
+  const l=lessons[k]||{};
+  const d=new Date(date);
+
+  document.getElementById('dm-title').textContent=`${w?w.name:''} · ${cl?cl.age:''}`;
+  document.getElementById('dm-sub').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${DAYS[d.getDay()]}) · ${cl?cl.time:''}`;
+  document.getElementById('dm-syms').innerHTML=SYMS.map(s=>`<button class="sym-btn${(l.icon||'📚')===s?' on':''}" onclick="pickSym(this)">${s}</button>`).join('');
+  document.getElementById('dm-topic').value=l.topic||'';
+  document.getElementById('dm-note').value=l.note||'';
+  curSt=l.status||'ready';
+  document.querySelectorAll('#dm-status-btns .st-btn').forEach(b=>{b.className=`st-btn${b.dataset.s===curSt?' on '+curSt:''}`;});
+  const r=routines[0];
+  stepChecks=l.checks?[...l.checks]:(r?r.steps.map(()=>false):[]);
+  stepNotes=l.stepNotes?[...l.stepNotes]:(r?r.steps.map(()=>''):[]);
+  document.getElementById('dm-rtn').innerHTML=r?r.steps.map((s,i)=>`
+    <div class="rtn-item">
+      <div class="rchk${stepChecks[i]?' done':''}" onclick="toggleRchk(${i})" id="rc${i}">${stepChecks[i]?'✓':''}</div>
+      <div style="flex:1;">
+        <div class="rchk-txt${stepChecks[i]?' done':''}" id="rt${i}">${i+1}. ${s}</div>
+        <input class="step-note-in" placeholder="메모..." value="${stepNotes[i]||''}" oninput="stepNotes[${i}]=this.value" />
+      </div>
+    </div>`).join(''):'<div style="color:var(--muted);font-size:12px;">설정에서 루틴을 추가하세요</div>';
+  document.getElementById('detail-overlay').classList.add('open');
+}
+function openDetailNew(dateStr){
+  if(!wons.length){alert('설정에서 원을 먼저 추가하세요!');return;}
+  const w=wons[0];const cl=(w.classes||[])[0];
+  if(!cl){alert('원에 반을 먼저 추가하세요!');return;}
+  openDetail(lkey(dateStr,w.id,cl.id),w.id,cl.id);
+}
+function pickSym(btn){document.querySelectorAll('.sym-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function setSt(s){curSt=s;document.querySelectorAll('#dm-status-btns .st-btn').forEach(b=>{b.className=`st-btn${b.dataset.s===s?' on '+s:''}`;});}
+function toggleRchk(i){
+  stepChecks[i]=!stepChecks[i];
+  const rc=document.getElementById(`rc${i}`),rt=document.getElementById(`rt${i}`);
+  rc.className=`rchk${stepChecks[i]?' done':''}`;rc.textContent=stepChecks[i]?'✓':'';
+  rt.className=`rchk-txt${stepChecks[i]?' done':''}`;
+}
+function saveLesson(){
+  const s=document.querySelector('.sym-btn.on');
+  lessons[editKey]={icon:s?s.textContent:'📚',topic:document.getElementById('dm-topic').value,note:document.getElementById('dm-note').value,status:curSt,checks:[...stepChecks],stepNotes:[...stepNotes]};
+  closeDetail();renderWeekly();renderMonthly();renderStats();
+  if(document.getElementById('pg-hist').classList.contains('on'))renderHistPage();
+}
+function closeDetail(){document.getElementById('detail-overlay').classList.remove('open');}
+
+/* ── STATS ── */
+function renderStats(){
+  const months=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  document.getElementById('stat-tabs').innerHTML=months.map((mn,i)=>`<button class="mtab${i===statMon?' on':''}" onclick="statMon=${i};renderStats()">${mn}</button>`).join('');
+  const year=2026,m=statMon,dim=new Date(year,m+1,0).getDate();
+  let total=0,done=0,can=0,rtnT=0,rtnD=0;
+  const wonCnts={};wons.forEach(w=>wonCnts[w.id]=0);
+  for(let d=1;d<=dim;d++){
+    const date=new Date(year,m,d),dow=date.getDay();
+    wons.filter(w=>w.days.includes(dow)).forEach(w=>{
+      (w.classes||[]).forEach(cl=>{
+        total++;
+        const l=lessons[lkey(dk(date),w.id,cl.id)];
+        if(l){wonCnts[w.id]=(wonCnts[w.id]||0)+1;if(l.status==='done')done++;if(l.status==='cancel')can++;if(l.checks)l.checks.forEach(c=>{rtnT++;if(c)rtnD++;});}
+      });
     });
   }
+  document.getElementById('stat-summary').innerHTML=`
+    <div class="sc"><div class="sc-lb">이번달 예정</div><div class="sc-val">${total}</div><div class="sc-sub">회 수업</div></div>
+    <div class="sc"><div class="sc-lb">완료 기록</div><div class="sc-val">${done}</div><div class="sc-sub">회</div></div>
+    <div class="sc"><div class="sc-lb">취소</div><div class="sc-val">${can}</div><div class="sc-sub">회</div></div>
+    <div class="sc"><div class="sc-lb">루틴 완료율</div><div class="sc-val">${rtnT?Math.round(rtnD/rtnT*100):0}%</div><div class="sc-sub">${rtnD}/${rtnT}</div></div>`;
+  const mx=Math.max(1,...Object.values(wonCnts));
+  document.getElementById('stat-bars').innerHTML=wons.map(w=>`
+    <div class="bar-row">
+      <div class="bar-lb">${w.name}</div>
+      <div class="bar-tr"><div class="bar-fi" style="width:${Math.round((wonCnts[w.id]||0)/mx*100)}%;background:${w.color};"></div></div>
+      <div class="bar-ct">${wonCnts[w.id]||0}</div>
+    </div>`).join('')||'<div style="color:var(--muted);font-size:12px;">수업 기록을 입력하면 나타납니다</div>';
+  const r=routines[0];
+  if(r){
+    const sd=Array(r.steps.length).fill(0),st=Array(r.steps.length).fill(0);
+    for(let d=1;d<=dim;d++){const date=new Date(year,m,d),dow=date.getDay();wons.filter(w=>w.days.includes(dow)).forEach(w=>{(w.classes||[]).forEach(cl=>{const l=lessons[lkey(dk(date),w.id,cl.id)];if(l&&l.checks)l.checks.forEach((c,i)=>{st[i]++;if(c)sd[i]++;});});});}
+    const mx2=Math.max(1,...st);
+    document.getElementById('stat-rtn').innerHTML=r.steps.map((s,i)=>`
+      <div class="bar-row">
+        <div class="bar-lb">${i+1}. ${s.length>10?s.slice(0,10)+'…':s}</div>
+        <div class="bar-tr"><div class="bar-fi" style="width:${Math.round((sd[i]||0)/mx2*100)}%;background:var(--c3);"></div></div>
+        <div class="bar-ct">${st[i]?Math.round((sd[i]||0)/st[i]*100):0}%</div>
+      </div>`).join('');
+  }else{document.getElementById('stat-rtn').innerHTML='<div style="color:var(--muted);font-size:12px;">루틴을 설정하면 나타납니다</div>';}
 }
 
-function stopBg(){ bgOscs.forEach(o=>{try{o.stop();}catch(e){}});bgOscs=[]; }
+/* ── HISTORY ── */
+function renderHistPage(){
+  if(!histWonId&&wons.length)histWonId=wons[0].id;
+  // won selector
+  document.getElementById('wsel-row').innerHTML=wons.map(w=>`
+    <button class="wsel${histWonId===w.id?' on':''}" style="border-left-color:${w.color}" onclick="histWonId=${w.id};histClassId=null;renderHistPage()">${w.name}</button>`).join('');
+  // class selector
+  const w=wons.find(x=>x.id===histWonId);
+  const classes=w?w.classes||[]:[];
+  if(!histClassId&&classes.length)histClassId=classes[0].id;
+  document.getElementById('class-sel-row').innerHTML=classes.map(cl=>`
+    <button class="wsel${histClassId===cl.id?' on':''}" style="border-left-color:${w.color}88;font-size:11px;" onclick="histClassId=${cl.id};renderHistPage()">${cl.age||'반'} ${cl.time}</button>`).join('');
 
-// ══════════════════════════════════════════════════════════════════
-//  GAME STATE
-// ══════════════════════════════════════════════════════════════════
-const WIN_P=55, WIN_G=100;
-let score=0,combo=0,maxCombo=0,life=3;
-let perfectCnt=0,goodCnt=0,missCnt=0;
-let gameRunning=false,lastTime=null,songTime=0;
-let bmIndex=0,curBeatmap=[];
-let nidCtr=0;
-
-function startGame(){
-  document.getElementById('title-screen').style.display='none';
-  initAudio();
-  beginGame();
-}
-
-function beginGame(){
-  score=0;combo=0;maxCombo=0;life=3;
-  perfectCnt=0;goodCnt=0;missCnt=0;
-  songTime=0;bmIndex=0;scrollNotes=[];splashP=[];hitFlashes=[];
-  curBeatmap=beats.map(n=>({...n,id:nidCtr++,hit:false,missed:false,x:0}));
-  startOrchBg();
-  updateHUD();lastTime=null;gameRunning=true;
-  requestAnimationFrame(mainLoop);
-}
-
-function mainLoop(ts){
-  if(!gameRunning) return;
-  if(!lastTime) lastTime=ts;
-  const dt=(ts-lastTime)/1000;lastTime=ts;songTime+=dt;
-  document.getElementById('progress-bar').style.width=Math.min(100,songTime/TOTAL_DURATION*100)+'%';
-
-  // Spawn notes
-  while(bmIndex<curBeatmap.length){
-    const n=curBeatmap[bmIndex];
-    const spawnTime=n.t-(CW-CURSOR_X)/SCROLL_SPD;
-    if(songTime>=spawnTime){ n.x=CURSOR_X+(n.t-songTime)*SCROLL_SPD; scrollNotes.push(n); bmIndex++; }
-    else break;
-  }
-
-  // Update x
-  scrollNotes.forEach(n=>{ n.x=CURSOR_X+(n.t-songTime)*SCROLL_SPD; });
-
-  // Auto-miss
-  scrollNotes.forEach(n=>{
-    if(!n.hit&&!n.missed&&songTime>n.t+0.45){ n.missed=true; missNote(n); }
-  });
-  scrollNotes=scrollNotes.filter(n=>!(n.missed&&n.missA!==undefined&&n.missA<=0)&&n.x>-60);
-
-  drawFrame();
-  drawSplash();
-
-  if(songTime>=TOTAL_DURATION&&scrollNotes.every(n=>n.hit||n.missed)&&bmIndex>=curBeatmap.length){
-    endGame();return;
-  }
-  requestAnimationFrame(mainLoop);
-}
-
-function hitDrum(drum){
-  if(!gameRunning) return;
-  initAudio();
-  playTimpaniHit(drum);
-  drumVisual(drum);
-  bounceBread();
-
-  let best=null,bestD=Infinity;
-  scrollNotes.forEach(n=>{
-    if(n.drum!==drum||n.hit||n.missed) return;
-    const d=Math.abs(n.x-CURSOR_X);
-    if(d<bestD){bestD=d;best=n;}
-  });
-  if(best&&bestD<=WIN_G){
-    best.hit=true;
-    hitFlashes.push({drum,alpha:.85});
-    triggerSplash(drum);
-    if(bestD<=WIN_P){
-      score+=300+combo*4;combo++;perfectCnt++;
-      showJudge('완벽! ✨',best.drum,'#b8860b');
-    } else {
-      score+=100+combo;combo++;goodCnt++;
-      showJudge('좋음! 👍',best.drum,'#1a7a30');
+  // collect lessons for this won+class
+  const entries=[];
+  Object.keys(lessons).sort().reverse().forEach(k=>{
+    const p=parseLkey(k);
+    if(p.wonId===histWonId&&p.classId===histClassId){
+      const l=lessons[k];
+      if(l&&(l.topic||l.note||(l.icon&&l.icon!=='📚')))entries.push({date:p.date,l,k});
     }
-    if(combo>maxCombo) maxCombo=combo;
-  }
-  updateHUD();
-}
-
-function missNote(n){
-  n.missA=0.5;
-  combo=0;missCnt++;life--;
-  showJudge('놓침 💨',n.drum,'#c0392b');
-  updateHUD();
-  if(life<=0) endGame();
-}
-
-function updateHUD(){
-  document.getElementById('score').textContent=score.toLocaleString();
-  document.getElementById('combo-display').textContent=combo>=4?`🔥 ${combo} 콤보`:'';
-  document.getElementById('life-display').textContent='❤️'.repeat(Math.max(0,life))+'🖤'.repeat(Math.max(0,3-life));
-}
-
-function showJudge(txt,drum,color){
-  const el=document.createElement('div');
-  el.className='judgment';el.textContent=txt;el.style.color=color;
-  const sy=rowY(drum);
-  el.style.cssText+=`;left:${CURSOR_X-20}px;top:${sy-35}px;z-index:30;`;
-  document.getElementById('score-panel').appendChild(el);
-  setTimeout(()=>el.remove(),700);
-}
-
-function drumVisual(drum){
-  const id=['C','G'][drum];
-  const mem=document.getElementById(`mem-${id}`);
-  const drm=document.getElementById(`drum-${id}`);
-  drm.classList.add('hit',`glow-${id}`);
-  mem.classList.remove('vibrate');void mem.offsetWidth;mem.classList.add('vibrate');
-
-  // Concentric rings
-  const colors=[DRUM_ROWS[drum].colorHex,'#ffffff'];
-  colors.forEach((rc,ri)=>{
-    const ring=document.createElement('div');ring.className='drum-ring';
-    ring.style.cssText=`border-color:${rc};width:160px;height:66px;animation:ringExp ${.5+ri*.12}s ${ri*.07}s ease-out forwards;`;
-    mem.appendChild(ring);setTimeout(()=>ring.remove(),750+ri*120);
   });
-  setTimeout(()=>{drm.classList.remove('hit',`glow-${id}`);mem.classList.remove('vibrate');},550);
+  const wonMemos=((memos[`${histWonId}_${histClassId}`])||[]).map(m=>({...m,isMemo:true}));
+  const all=[...entries,...wonMemos].sort((a,b)=>(b.date||b.ts||'').localeCompare(a.date||a.ts||''));
+
+  if(!all.length){document.getElementById('hist-list').innerHTML=`<div class="empty">아직 기록이 없어요 🐱<br>주간 캘린더에서 수업 후 입력해보세요</div>`;return;}
+  document.getElementById('hist-list').innerHTML=all.map(item=>{
+    if(item.isMemo)return `<div class="hist-item" style="border-left-color:${w?w.color:'var(--line)'}"><div class="hist-date">📌 ${item.ts}</div><div class="hist-note">${item.text}</div></div>`;
+    const l=item.l,d=new Date(item.date);
+    const sc=l.status||'ready';
+    const done=(l.checks||[]).filter(Boolean).length;
+    const total=routines[0]?routines[0].steps.length:0;
+    return `<div class="hist-item" style="border-left-color:${w?w.color:'var(--line)'};cursor:pointer" onclick="openDetail('${item.k}','${parseLkey(item.k).wonId}','${parseLkey(item.k).classId}')">
+      <div class="hist-date">${d.getMonth()+1}월 ${d.getDate()}일 (${DAYS[d.getDay()]}) <span class="sbadge ${sc}">${SL[sc]}</span>${total?` <span style="font-size:10px;color:var(--muted);">루틴 ${done}/${total}</span>`:''}</div>
+      <div class="hist-topic">${l.icon||'📚'} ${l.topic||'(제목 없음)'}</div>
+      ${l.note?`<div class="hist-note">${l.note}</div>`:''}
+      ${l.checks&&l.checks.some(Boolean)?`<div class="hist-tags">${(routines[0]?.steps||[]).filter((_,i)=>l.checks[i]).map(s=>`<span class="htag">✓ ${s.length>12?s.slice(0,12)+'…':s}</span>`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function addMemo(){
+  const inp=document.getElementById('memo-in'),text=inp.value.trim();
+  if(!text||!histWonId)return;
+  const mk=`${histWonId}_${histClassId}`;
+  if(!memos[mk])memos[mk]=[];
+  const now=new Date();
+  memos[mk].unshift({text,ts:`${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`});
+  inp.value='';renderHistPage();
 }
 
-function bounceBread(){
-  const b=document.getElementById('bread-char');
-  b.classList.remove('bounce');void b.offsetWidth;b.classList.add('bounce');
+/* ── NAV ── */
+function nav(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.bi').forEach(b=>b.classList.remove('on'));
+  document.getElementById(`pg-${id}`).classList.add('on');
+  const map={setup:0,weekly:1,monthly:2,stats:3,hist:4};
+  document.querySelectorAll('.bi')[map[id]].classList.add('on');
+  if(id==='weekly')renderWeekly();
+  if(id==='monthly')renderMonthly();
+  if(id==='stats')renderStats();
+  if(id==='hist')renderHistPage();
 }
 
-function endGame(){
-  gameRunning=false;stopBg();
-  document.getElementById('result-screen').style.display='flex';
-  document.getElementById('final-score').textContent=score.toLocaleString();
-  document.getElementById('res-p').textContent=perfectCnt;
-  document.getElementById('res-g').textContent=goodCnt;
-  document.getElementById('res-m').textContent=missCnt;
-  document.getElementById('res-c').textContent=maxCombo;
-  const total=perfectCnt+goodCnt+missCnt;
-  const acc=total>0?Math.round((perfectCnt+goodCnt)/total*100):0;
-  document.getElementById('result-title').textContent=
-    acc>=95?'🏆 마에스트로!':acc>=80?'🎉 Bravo!':acc>=60?'👏 잘했어요!':'💪 다시 도전!';
-}
-
-function restartGame(){
-  document.getElementById('result-screen').style.display='none';
-  initAudio();beginGame();
-}
-
-// Keyboard
-document.addEventListener('keydown',e=>{
-  if(!e.repeat){
-    if(e.key.toLowerCase()==='f') hitDrum(0);
-    if(e.key.toLowerCase()==='j') hitDrum(1);
-  }
-});
-
-// Start rendering loop even before game starts
-(function bgRender(){drawSplash();requestAnimationFrame(bgRender);})();
+// init
+initDefaults();
 </script>
-</body>
 </html>
